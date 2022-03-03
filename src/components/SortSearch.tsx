@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Select, MenuItem ,InputLabel} from "@mui/material";
+import { Select, MenuItem, InputLabel } from "@mui/material";
 type Props = {
-    setSortAction : React.Dispatch<React.SetStateAction<string>>;
-    setOnClicked : React.Dispatch<React.SetStateAction<boolean>>;
+  setSortAction: React.Dispatch<React.SetStateAction<string>>;
+  setOnClicked: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const SortSearch = (props: Props) => {
@@ -13,8 +13,14 @@ const SortSearch = (props: Props) => {
     { name: "Release date Descending", value: "release_date.desc" },
     { name: "Revenue Ascending ", value: "revenue.asc" },
     { name: "Revenue Descending", value: "revenue.desc" },
-    { name: "Primary Release date Ascending ", value: "primary_release_date.asc" },
-    { name: "Primary Release date Descending", value: "primary_release_date.desc" },
+    {
+      name: "Primary Release date Ascending ",
+      value: "primary_release_date.asc",
+    },
+    {
+      name: "Primary Release date Descending",
+      value: "primary_release_date.desc",
+    },
     { name: "Original Title Ascending ", value: "original_title.asc" },
     { name: "Original Title Descending", value: "original_title.desc" },
     { name: "Vote Average Ascending ", value: "vote_average.asc" },
@@ -26,7 +32,6 @@ const SortSearch = (props: Props) => {
   const [sortValue, setSortAction] = useState<string>("");
   //setSortValue("123");
   return (
-    
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"
@@ -35,12 +40,13 @@ const SortSearch = (props: Props) => {
       fullWidth
       displayEmpty
     >
-      {dataArray.map((data) => {
+      {dataArray.map((data, index) => {
         return (
           <MenuItem
+            key={index}
             value={data.value}
             onClick={() => {
-            setSortAction(data.value);
+              setSortAction(data.value);
               props.setSortAction(data.value);
               props.setOnClicked(true);
             }}

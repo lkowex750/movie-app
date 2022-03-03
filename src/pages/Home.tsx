@@ -2,6 +2,8 @@ import React, {
   useState,
   useEffect,
   ChangeEvent,
+  FocusEvent,
+  useMemo,
   useContext,
   Dispatch,
   SetStateAction,
@@ -10,7 +12,7 @@ import React, {
 import Layout from "../components/Layout";
 import Movie from "../components/Movie";
 import { RootObject } from "../interface/ResponseProps";
-import { getPopularMovie, getMoviesDiscover } from "../Api/api";
+import { getPopularMovie, getMoviesDiscover, getListGenres } from "../Api/api";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
 import PageContext from "../context/PageContext";
@@ -30,17 +32,20 @@ import {
   AccordionSummary,
   AccordionDetails,
   Accordion,
-  Typography
+  Typography,
+  Switch,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SortSearch from "../components/SortSearch";
 import Genres from "../components/Genres";
-import { PropsDiscover } from "../interface/RequestDiscover";
+import { RootObjectGenres,Genre } from "../interface/ResponseGenres";
 
 interface Props {}
 
-function Home({}: Props) {
+const Home = () => {
   const { setIsLanguageIn, isLanguageIn } = useContext(LanguageContext);
   const { isRegionIn, setIsRegionIn } = useContext(RegionContext);
   const { isPageIn, setIsPageIn } = useContext(PageContext);
@@ -55,8 +60,14 @@ function Home({}: Props) {
   const [isEnterSearch, setIsEnterSearch] = useState<boolean>(false);
   const [handleCallApi, setHandleCallApi] = useState({
     main: true,
-    sortCall: false,
+    discover: false,
   });
+
+  const [listGenres, setListGenres] = useState<RootObjectGenres["genres"]>([]);
+  const [genresId, setgenresId] = useState<RootObjectGenres["genres"]>([]);
+  const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
+  const [test, setTest] = useState<string>("");
+  var with_genres : string = "";
   //const valueRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     setLoading(false);
@@ -79,12 +90,13 @@ function Home({}: Props) {
         isPageIn,
         isLanguageIn,
         isRegionIn,
-        sortAction
+        sortAction,
+        with_genres
       );
       setMovies(data.results);
       setPage(data.page);
       setLoading(true);
-
+      with_genres = "";
       if (data.total_pages >= 500) {
         setTotalPages(500);
       } else {
@@ -94,55 +106,70 @@ function Home({}: Props) {
 
     if (handleCallApi["main"]) {
       fetchGetPopMovies();
-      console.log("Here kkk");
-    } else if (handleCallApi["sortCall"]) {
-      console.log("Here tuu");
+    } else if (handleCallApi["discover"]) {
+      if(genresId.length > 0){
+        genresId.forEach(e => {
+          with_genres+=","+e.id
+        })
+      }
+
+      
       fetchGetDiscoverMovie();
     }
 
     if (isSearchButton) {
       console.log("data : " + sortAction);
-      fetchGetDiscoverMovie();
-      console.log("Call Api");
+      console.log(genresId)
+      if (sortAction || genresId) {
+        setHandleCallApi({
+          ...handleCallApi,
+          ["main"]: false,
+          ["discover"]: true,
+        });
+      }
+
+      // if (test) {
+      //   console.log("2223");
+      // }
+
       setIsSearchButton(false);
-      setHandleCallApi({
-        ...handleCallApi,
-        ["main"]: false,
-        ["sortCall"]: true,
-      });
+      //fetchGetDiscoverMovie();
+      console.log("Call Api : "+genresId.length);
+      if(genresId.length > 0){
+        genresId.forEach(e => {
+          with_genres+=e.id+","
+        })
+
+        with_genres = with_genres.slice(0,-1)
+      }
+
+      
+      console.log(with_genres)
+      //setIsFilterClicked(!isFilterClicked);
+      console.log("isSearch button : " + isSearchButton);
     }
 
     if (isEnterSearch) {
-      console.log("ef");
       setIsEnterSearch(false);
     }
   }, [isPageIn, isLanguageIn, isRegionIn, isSearchButton, isEnterSearch]);
 
-  // useEffect(() => {
-  //   if (isSearchButton) {
-  //     console.log("data : " + sortAction);
-  //     console.log("Call Api");
-  //     setIsSearchButton(false);
-  //     setHandleCallApi({...handleCallApi,["main"] : false,["sortCall"] : true});
-  //   }
+  useEffect(() => {
+    async function fetchListGenres() {
+      const data = await getListGenres(isLanguageIn);
+      console.log(data.genres);
+      setListGenres(data.genres);
+      console.log(listGenres);
+    }
 
-  //   if (isEnterSearch) {
-  //     console.log("ef");
-  //     setIsEnterSearch(false);
-  //   }
-  // }, [isSearchButton, isEnterSearch]);
+    fetchListGenres();
+  }, [isLanguageIn]);
 
-  // useEffect(()=>{
-  //   if(isEnterSearch){
-  //     console.log("ef");
-  //     setIsEnterSearch(false);
-  //   }
-
-  // },[isEnterSearch]);
-
-  const movieElements = movies.map((movie, index) => {
-    return <Movie key={index} results={movie} />;
-  });
+  const movieElements = useMemo(() => {
+    return movies.map((movie, index) => {
+      return <Movie key={index} results={movie} />;
+    });
+  }, [movies]);
 
   const setSelectedPagenumber = (
     event: React.ChangeEvent<unknown>,
@@ -159,25 +186,25 @@ function Home({}: Props) {
     setIsRegionIn(event.target.value as string);
   };
 
-  const handleOnChangeTextSearch = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleOnChangeTextSearch = (event: FocusEvent<HTMLInputElement>) => {
+    //console.log(event.target.value)
     setSearchText(event.target.value);
   };
 
   function handleCallApiSearch() {
-    console.log(searchText);
+    //console.log("home");
     console.log("run");
   }
 
   return (
     <Layout>
-      <Grid spacing={10}>
+      <Grid>
         <Grid item xs={12} margin={1}>
           <TextField
             id="standard-basic"
             label="Search"
             variant="outlined"
             fullWidth
-            value={searchText}
             onKeyPress={(event) => {
               if (event.key === "Enter") {
                 event.preventDefault();
@@ -185,11 +212,12 @@ function Home({}: Props) {
                 setIsEnterSearch(true);
               }
             }}
-            onChange={handleOnChangeTextSearch}
+            //onChange={(e) => handleOnChangeTextSearch(e)}
+            onBlur={handleOnChangeTextSearch}
           />
         </Grid>
-        <Grid item xs={12} spacing={2} margin={1} lg={12}>
-          {isClickProps ? (
+        <Grid item xs={12} margin={1} lg={12}>
+          {isClickProps || isFilterClicked ? (
             <Button
               variant="contained"
               fullWidth
@@ -198,6 +226,8 @@ function Home({}: Props) {
               style={{ cursor: "pointer" }}
               onClick={() => {
                 setIsClickProps(false);
+                setIsFilterClicked(false);
+                setTest("1");
                 setIsSearchButton(true);
               }}
             >
@@ -214,7 +244,7 @@ function Home({}: Props) {
             </AccordionSummary>
             <AccordionDetails>
               <FormControl fullWidth>
-                <InputLabel id="sorting" >Sort Results By</InputLabel>
+                <InputLabel id="sorting">Sort Results By</InputLabel>
                 <SortSearch
                   setSortAction={setSortAction}
                   setOnClicked={setIsClickProps}
@@ -231,7 +261,35 @@ function Home({}: Props) {
               <Typography>Filters</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Genres></Genres>
+              <Grid>
+                <FormGroup>
+                  <FormControlLabel
+                    control={<Switch defaultChecked={false} color="warning" />}
+                    label="Adult Contents"
+                  />
+                </FormGroup>
+              </Grid>
+              <br />
+              <Grid
+                container
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                {listGenres
+                  ? listGenres.map((genre) => {
+                      return (
+                        <Genres
+                          props={genre}
+                          key={genre.id}
+                          setOnClicked={setIsFilterClicked}
+                          setGenresId = {setgenresId}
+                          genesId={genresId}
+                        ></Genres>
+                      );
+                    })
+                  : null}
+              </Grid>
             </AccordionDetails>
           </Accordion>
         </Grid>
@@ -364,6 +422,6 @@ function Home({}: Props) {
       </Hidden>
     </Layout>
   );
-}
+};
 
 export default Home;

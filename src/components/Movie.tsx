@@ -63,8 +63,7 @@ const Movie = (props: Props) => {
             title={
               <div
                 style={{
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  overflow: "hidden",             
                   width: "11rem",
                 }}
               >

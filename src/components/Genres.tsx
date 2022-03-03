@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Checkbox,
   FormControlLabel,
@@ -6,51 +6,44 @@ import {
   FormLabel,
   FormGroup,
   Box,
+  Grid,
 } from "@mui/material";
-type Props = {};
+import { Genre } from "../interface/ResponseGenres";
+type Props = {
+  props: Genre;
+  setOnClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  setGenresId: React.Dispatch<React.SetStateAction<Genre[]>>;
+  genesId: Genre[];
+};
 
-const Genres = (props: Props) => {
-    const obj = {
-        gilad: false,
-        jason: false,
-        antoine: false,
-      }
-      
-  const [state, setState] = useState(obj);
-
-  
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({
-      ...state,
-      [event.target.name]: event.target.checked,
-    });
+const Genres = (value: Props) => {
+ 
+  const [check, setCheck] = useState<boolean>(false);
+  const handleOnClicked = () => {
+    setCheck(!check);
+    value.setOnClicked(true);
+    if (!value.genesId.includes(value.props) == false) {
+      let val = new Set(value.genesId);
+      val.delete(value.props);
+      value.setGenresId(Array.from(val));
+    } else {
+      let val = new Set(value.genesId);
+      val.add(value.props);
+      value.setGenresId(Array.from(val));
+    }
   };
 
-  const { gilad, jason, antoine } = state;
-
   return (
-    <Box sx={{ display: "flex" }}>
-      <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-        <FormLabel component="legend">Genres</FormLabel>
+    <Grid item xs={6} md={2}>
+      <FormControl component="fieldset" variant="standard">
         <FormGroup>
           <FormControlLabel
-            control={<Checkbox checked={gilad} name="gilad" onChange={handleChange} />}
-            label="Gilad Gray"
+            control={<Checkbox checked={check} onClick={handleOnClicked} />}
+            label={value.props.name}
           />
-          <FormControlLabel
-            control={<Checkbox checked={jason} name="jason" onChange={handleChange}/>}
-            label="Jason Killian"
-          />
-          <FormControlLabel
-            control={<Checkbox checked={antoine} name="antoine" onChange={handleChange}/>}
-            label="Antoine Llorca"
-          />
-          
         </FormGroup>
       </FormControl>
-      
-    </Box>
+    </Grid>
   );
 };
 
