@@ -72,6 +72,7 @@ const Home = () => {
   const [isFocus,setIsFocus] = useState<boolean>(false);
   var with_genres: string = "";
   //const valueRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     setLoading(false);
 
@@ -160,26 +161,8 @@ const Home = () => {
           ["search"]: false,
         });
       }
-
-      // if (test) {
-      //   console.log("2223");
-      // }
-
       setIsSearchButton(false);
-      //fetchGetDiscoverMovie();
       console.log("Call Api : " + genresId.length);
-      // if(genresId.length > 0){
-      //   with_genres = ""
-      //   genresId.forEach(e => {
-      //     with_genres+=e.id+","
-      //   })
-
-      //   with_genres = with_genres.slice(0,-1)
-      // }
-
-      console.log(with_genres);
-      //setIsFilterClicked(!isFilterClicked);
-      console.log("isSearch button : " + isSearchButton);
     }
 
     if (isEnterSearch) {
@@ -195,10 +178,10 @@ const Home = () => {
 
   useEffect(() => {
     async function fetchListGenres() {
-      const data = await getListGenres(isLanguageIn);
+      const data = await getListGenres(isLanguageIn,"movie");
       console.log(data.genres);
       setListGenres(data.genres);
-      console.log(listGenres);
+      //console.log(listGenres);
     }
 
     fetchListGenres();
@@ -251,13 +234,6 @@ const Home = () => {
             label="Search"
             variant="outlined"
             fullWidth
-            // onKeyPress={(event) => {
-            //   if (event.key === "Enter") {
-            //     event.preventDefault();
-            //     handleCallApiSearch();
-            //     setIsEnterSearch(true);
-            //   }
-            // }}
             onChange={(e) => {if(e.target.value.length >0){setIsFocus(true)}else{setIsFocus(false)}}}
             onBlur={handleOnChangeTextSearch}
           />
@@ -287,20 +263,7 @@ const Home = () => {
               Search
             </Button>
           ) : null}
-          {/* {isFocus ? (
-            <Button
-              variant="contained"
-              fullWidth
-              color="success"
-              size="large"
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setIsEnterSearch(true);
-              }}
-            >
-              Search
-            </Button>
-          ) : null} */}
+          
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -313,6 +276,7 @@ const Home = () => {
               <FormControl fullWidth>
                 <InputLabel id="sorting">Sort Results By</InputLabel>
                 <SortSearch
+                typeMovie="movie"
                   setSortAction={setSortAction}
                   setOnClicked={setIsClickProps}
                 ></SortSearch>

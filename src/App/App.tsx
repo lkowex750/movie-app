@@ -9,6 +9,7 @@ import { Result } from "../interface/ResponseProps";
 import MovieContext from "../context/MovieSelectedContext";
 import MovieSelected from "../components/MovieSelected";
 import { Container } from "@mui/material";
+import TvShows from "../pages/TvShows";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                 />
               }
             />
+            <Route path="/tv" element={<TvShows />}/>
           </Routes>
         </BrowserRouter>
       </ContextProvider>

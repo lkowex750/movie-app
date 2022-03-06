@@ -43,7 +43,7 @@ const Navber = () => {
   const setSelectedRegion = (event: SelectChangeEvent) => {
     setIsRegionIn(event.target.value as string);
   };
-  
+
   return (
     <HideOnScroll>
       <AppBar>
@@ -55,7 +55,7 @@ const Navber = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Grid item sm={6} md={9} lg={10} xs={6}>
+            <Grid item sm={6} md={9} lg={10} xs={8}>
               <Button
                 variant="text"
                 style={{ color: "#FFF" }}
@@ -64,7 +64,17 @@ const Navber = () => {
                   setIsPageIn(1);
                 }}
               >
-                <Typography>Movie</Typography>
+                <Typography>Movies</Typography>
+              </Button>
+              <Button
+                variant="text"
+                style={{ color: "#FFF" }}
+                href="/tv"
+                onClick={() => {
+                  setIsPageIn(1);
+                }}
+              >
+                <Typography>Tv Shows</Typography>
               </Button>
               <Button
                 variant="text"

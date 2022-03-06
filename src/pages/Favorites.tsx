@@ -150,7 +150,7 @@ const Favorites = (props: Props) => {
 
   return (
     <Layout>
-      <Typography variant="h1">Your Favorites</Typography>
+      <Typography variant="h3">Your Favorites</Typography>
       <br />
       <Grid
         container

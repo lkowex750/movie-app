@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Select, MenuItem, InputLabel } from "@mui/material";
 type Props = {
+  typeMovie: string;
   setSortAction: React.Dispatch<React.SetStateAction<string>>;
   setOnClicked: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -29,6 +30,15 @@ const SortSearch = (props: Props) => {
     { name: "Vote Count Descending", value: "vote_count.desc" },
   ];
 
+  const dataSortTv = [
+    { name: "Popularity Ascending ", value: "popularity.asc" },
+    { name: "Popularity Descending", value: "popularity.desc" },
+    { name: "Vote Average Ascending ", value: "vote_average.asc" },
+    { name: "Vote Average Descending", value: "vote_average.desc" },
+    { name: "Release date Ascending ", value: "first_air_date.asc" },
+    { name: "Release date Descending", value: "first_air_date.desc" },
+  ];
+
   const [sortValue, setSortAction] = useState<string>("");
   //setSortValue("123");
   return (
@@ -40,21 +50,37 @@ const SortSearch = (props: Props) => {
       fullWidth
       displayEmpty
     >
-      {dataArray.map((data, index) => {
-        return (
-          <MenuItem
-            key={index}
-            value={data.value}
-            onClick={() => {
-              setSortAction(data.value);
-              props.setSortAction(data.value);
-              props.setOnClicked(true);
-            }}
-          >
-            {data.name}
-          </MenuItem>
-        );
-      })}
+      {props.typeMovie === "movie"
+        ? dataArray.map((data, index) => {
+            return (
+              <MenuItem
+                key={index}
+                value={data.value}
+                onClick={() => {
+                  setSortAction(data.value);
+                  props.setSortAction(data.value);
+                  props.setOnClicked(true);
+                }}
+              >
+                {data.name}
+              </MenuItem>
+            );
+          })
+        : dataSortTv.map((data, index) => {
+            return (
+              <MenuItem
+                key={index}
+                value={data.value}
+                onClick={() => {
+                  setSortAction(data.value);
+                  props.setSortAction(data.value);
+                  props.setOnClicked(true);
+                }}
+              >
+                {data.name}
+              </MenuItem>
+            );
+          })}
     </Select>
   );
 };

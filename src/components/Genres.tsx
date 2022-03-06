@@ -34,7 +34,7 @@ const Genres = (value: Props) => {
   };
 
   return (
-    <Grid item xs={6} md={2}>
+    <Grid item xs={6} md={4}>
       <FormControl component="fieldset" variant="standard">
         <FormGroup>
           <FormControlLabel
