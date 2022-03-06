@@ -12,7 +12,7 @@ import React, {
 import Layout from "../components/Layout";
 import Movie from "../components/Movie";
 import { RootObject } from "../interface/ResponseProps";
-import { getPopularMovie, getMoviesDiscover, getListGenres } from "../Api/api";
+import { getPopularMovie, getMoviesDiscover, getListGenres ,getSearchMovie} from "../Api/api";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
 import PageContext from "../context/PageContext";
@@ -41,7 +41,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SortSearch from "../components/SortSearch";
 import Genres from "../components/Genres";
-import { RootObjectGenres,Genre } from "../interface/ResponseGenres";
+import { RootObjectGenres, Genre } from "../interface/ResponseGenres";
 
 interface Props {}
 
@@ -61,13 +61,16 @@ const Home = () => {
   const [handleCallApi, setHandleCallApi] = useState({
     main: true,
     discover: false,
+    search: false,
   });
 
   const [listGenres, setListGenres] = useState<RootObjectGenres["genres"]>([]);
   const [genresId, setgenresId] = useState<RootObjectGenres["genres"]>([]);
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
   const [test, setTest] = useState<string>("");
-  var with_genres : string = "";
+  const [isAdultsContents, setIsAdlutsContents] = useState<boolean>(false);
+  const [isFocus,setIsFocus] = useState<boolean>(false);
+  var with_genres: string = "";
   //const valueRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     setLoading(false);
@@ -91,7 +94,8 @@ const Home = () => {
         isLanguageIn,
         isRegionIn,
         sortAction,
-        with_genres
+        with_genres,
+        isAdultsContents
       );
       setMovies(data.results);
       setPage(data.page);
@@ -104,27 +108,56 @@ const Home = () => {
       }
     }
 
+    async function fetchSearchMovies() {
+      console.log(searchText)
+      const data = await getSearchMovie(isLanguageIn,searchText,isPageIn,isAdultsContents,isRegionIn);
+      
+      if(data === null){
+        setMovies([]);
+      setPage(0);
+      setLoading(true);
+      setTotalPages(0);
+      }
+      setMovies(data.results);
+      setPage(data.page);
+      setLoading(true);
+
+      if (data.total_pages >= 500) {
+        setTotalPages(500);
+      } else {
+        setTotalPages(data.total_pages);
+      }
+
+    }
+
     if (handleCallApi["main"]) {
       fetchGetPopMovies();
     } else if (handleCallApi["discover"]) {
-      if(genresId.length > 0){
-        genresId.forEach(e => {
-          with_genres+=","+e.id
-        })
+      console.log(genresId.length);
+      if (genresId.length > 0) {
+        with_genres = "";
+        genresId.forEach((e) => {
+          with_genres += e.id + ",";
+        });
+        console.log("Adults : " + isAdultsContents);
+        with_genres = with_genres.slice(0, -1);
       }
 
-      
       fetchGetDiscoverMovie();
+    } else if (handleCallApi["search"]) {
+      console.log("Call Search Only");
+      fetchSearchMovies();
     }
 
     if (isSearchButton) {
       console.log("data : " + sortAction);
-      console.log(genresId)
+      console.log(genresId);
       if (sortAction || genresId) {
         setHandleCallApi({
           ...handleCallApi,
           ["main"]: false,
           ["discover"]: true,
+          ["search"]: false,
         });
       }
 
@@ -134,22 +167,28 @@ const Home = () => {
 
       setIsSearchButton(false);
       //fetchGetDiscoverMovie();
-      console.log("Call Api : "+genresId.length);
-      if(genresId.length > 0){
-        genresId.forEach(e => {
-          with_genres+=e.id+","
-        })
+      console.log("Call Api : " + genresId.length);
+      // if(genresId.length > 0){
+      //   with_genres = ""
+      //   genresId.forEach(e => {
+      //     with_genres+=e.id+","
+      //   })
 
-        with_genres = with_genres.slice(0,-1)
-      }
+      //   with_genres = with_genres.slice(0,-1)
+      // }
 
-      
-      console.log(with_genres)
+      console.log(with_genres);
       //setIsFilterClicked(!isFilterClicked);
       console.log("isSearch button : " + isSearchButton);
     }
 
     if (isEnterSearch) {
+      setHandleCallApi({
+        ...handleCallApi,
+        ["main"]: false,
+        ["discover"]: false,
+        ["search"]: true,
+      });
       setIsEnterSearch(false);
     }
   }, [isPageIn, isLanguageIn, isRegionIn, isSearchButton, isEnterSearch]);
@@ -166,6 +205,7 @@ const Home = () => {
   }, [isLanguageIn]);
 
   const movieElements = useMemo(() => {
+    console.log("useMemo");
     return movies.map((movie, index) => {
       return <Movie key={index} results={movie} />;
     });
@@ -188,11 +228,17 @@ const Home = () => {
 
   const handleOnChangeTextSearch = (event: FocusEvent<HTMLInputElement>) => {
     //console.log(event.target.value)
+    
     setSearchText(event.target.value);
+    if(event.target.value.length > 0){
+      setIsFocus(true);
+    }
+    
+    //setIsClickProps(true);
   };
 
   function handleCallApiSearch() {
-    //console.log("home");
+    console.log(isAdultsContents);
     console.log("run");
   }
 
@@ -205,19 +251,20 @@ const Home = () => {
             label="Search"
             variant="outlined"
             fullWidth
-            onKeyPress={(event) => {
-              if (event.key === "Enter") {
-                event.preventDefault();
-                handleCallApiSearch();
-                setIsEnterSearch(true);
-              }
-            }}
-            //onChange={(e) => handleOnChangeTextSearch(e)}
+            // onKeyPress={(event) => {
+            //   if (event.key === "Enter") {
+            //     event.preventDefault();
+            //     handleCallApiSearch();
+            //     setIsEnterSearch(true);
+            //   }
+            // }}
+            onChange={(e) => {if(e.target.value.length >0){setIsFocus(true)}else{setIsFocus(false)}}}
             onBlur={handleOnChangeTextSearch}
           />
         </Grid>
         <Grid item xs={12} margin={1} lg={12}>
-          {isClickProps || isFilterClicked ? (
+          {isClickProps || isFilterClicked || isFocus ? (
+            
             <Button
               variant="contained"
               fullWidth
@@ -227,13 +274,33 @@ const Home = () => {
               onClick={() => {
                 setIsClickProps(false);
                 setIsFilterClicked(false);
-                setTest("1");
-                setIsSearchButton(true);
+                setTest("1"); 
+                if(isFocus){
+                  setIsFocus(false);
+                  setIsEnterSearch(true);
+                }else{
+                  setIsSearchButton(true);
+                }          
+                
               }}
             >
               Search
             </Button>
           ) : null}
+          {/* {isFocus ? (
+            <Button
+              variant="contained"
+              fullWidth
+              color="success"
+              size="large"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setIsEnterSearch(true);
+              }}
+            >
+              Search
+            </Button>
+          ) : null} */}
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -264,7 +331,17 @@ const Home = () => {
               <Grid>
                 <FormGroup>
                   <FormControlLabel
-                    control={<Switch defaultChecked={false} color="warning" />}
+                    control={
+                      <Switch
+                        defaultChecked={false}
+                        value={isAdultsContents}
+                        onChange={() => {
+                          setIsAdlutsContents(!isAdultsContents);
+                          //setIsFilterClicked(true);
+                        }}
+                        color="warning"
+                      />
+                    }
                     label="Adult Contents"
                   />
                 </FormGroup>
@@ -283,7 +360,7 @@ const Home = () => {
                           props={genre}
                           key={genre.id}
                           setOnClicked={setIsFilterClicked}
-                          setGenresId = {setgenresId}
+                          setGenresId={setgenresId}
                           genesId={genresId}
                         ></Genres>
                       );

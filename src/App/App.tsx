@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import About from "../pages/About";
+import Favorites from "../pages/Favorites";
 import Home from "../pages/Home";
 import "./App.css";
 import ContextProvider from "../context/ContextProvider";
@@ -9,6 +9,7 @@ import { Result } from "../interface/ResponseProps";
 import MovieContext from "../context/MovieSelectedContext";
 import MovieSelected from "../components/MovieSelected";
 import { Container } from "@mui/material";
+
 
 function App() {
   const { id, backdrop_path, title,release_date } = useContext(MovieContext);
@@ -20,7 +21,7 @@ function App() {
           <Routes>
             <Route index element={<Navigate to="/movie" />} />
             <Route path="/movie" element={<Home />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route
               path="/movie/:id"
               element={

@@ -11,6 +11,8 @@ import { Typography, Box, Grid, Button } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import InfoIcon from "@mui/icons-material/Info";
 import LayoutForSelectPage from "./LayoutForSelectPage";
+import FavoiritesContext from "../context/FavoritesContext";
+import StarIcon from "@mui/icons-material/Star";
 
 function MovieSelected(value: RootObject) {
   const { id, title, backdrop_path, release_date } = useContext(MovieContext);
@@ -18,6 +20,8 @@ function MovieSelected(value: RootObject) {
   const { isLanguageIn } = useContext(LanguageContext);
   const [poster, setPoster] = useState<string>("");
   const [movies, setMovies] = useState<RootObject>();
+  const { isFavoiritesIn, setIsFavoiritesIn } = useContext(FavoiritesContext);
+  const [statusButton, setStatusButton] = useState<boolean>(false);
   let path = "https://image.tmdb.org/t/p/original" + backdrop_path;
   let pathPost = "https://image.tmdb.org/t/p/original";
   let setRelease_date = "";
@@ -48,6 +52,39 @@ function MovieSelected(value: RootObject) {
 
     fetchGetMovieDetail();
   }, [isLanguageIn]);
+
+  useEffect(() => {
+    isFavoiritesIn.forEach((e) => {
+      if (e.id === id) {
+        console.log(e.id);
+        return setStatusButton(true);
+      }
+    });
+  }, [statusButton]);
+
+  const handleSetFavoriteMovie = () => {
+    let val = new Set(isFavoiritesIn);
+    val.add({
+      id: id,
+      title: title,
+      poster: "https://image.tmdb.org/t/p/original" + movies?.poster_path,
+      backdrop_path: backdrop_path,
+    });
+
+    setIsFavoiritesIn(Array.from(val));
+    setStatusButton(true);
+  };
+
+  const tryLog = () => {
+    let val = new Set(isFavoiritesIn);
+    isFavoiritesIn.forEach((e) => {
+      if (e.id === id) {
+        val.delete(e);
+      }
+    });
+    setIsFavoiritesIn(Array.from(val));
+    setStatusButton(false);
+  };
 
   return (
     <LazyLoadComponent>
@@ -121,45 +158,49 @@ function MovieSelected(value: RootObject) {
               </span>
             </ShowMoreText>
             <br />
-            {/* <Box style={{ display: "flex" }}>
-              <Button
-                variant="contained"
-                style={{
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "18px",
-                  fontWeight: "500",
-                  marginRight: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                <PlayArrowIcon />
-                <span style={{ color: "white" }}>Play</span>
-              </Button>
-
-              <Button
-                variant="contained"
-                style={{
-                  padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "18px",
-                  fontWeight: "500",
-                  marginRight: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                <InfoIcon style={{ color: "white" }} />
-                <span style={{ color: "white" }}>Info</span>
-              </Button>
-            </Box> */}
+            <Box style={{ display: "flex" }}>
+              {statusButton ? (
+                <Button
+                  variant="contained"
+                  style={{
+                    padding: "10px 20px",
+                    border: "none",
+                    borderRadius: "5px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "18px",
+                    fontWeight: "500",
+                    marginRight: "10px",
+                    cursor: "pointer",
+                  }}
+                  onClick={tryLog}
+                >
+                  <StarIcon />
+                  <span style={{ color: "white" }}>Unfavorite</span>
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={{
+                    padding: "10px 20px",
+                    border: "none",
+                    borderRadius: "5px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "18px",
+                    fontWeight: "500",
+                    marginRight: "10px",
+                    cursor: "pointer",
+                  }}
+                  onClick={handleSetFavoriteMovie}
+                >
+                  <StarIcon />
+                  <span style={{ color: "white" }}>favorite</span>
+                </Button>
+              )}
+            </Box>
           </Grid>
         </Grid>
       </LayoutForSelectPage>

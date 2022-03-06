@@ -70,10 +70,10 @@ const Navber = () => {
                 variant="text"
                 style={{ color: "#FFF" }}
                 onClick={() => {
-                  navigate("/about");
+                  navigate("/favorites");
                 }}
               >
-                <Typography>About</Typography>
+                <Typography>Favorites</Typography>
               </Button>
             </Grid>
 
