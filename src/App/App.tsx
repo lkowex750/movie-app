@@ -24,7 +24,7 @@ function App() {
             <Route path="/movie" element={<Home />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route
-              path="/movie/:id"
+              path="/:type/:id"
               element={
                 <MovieSelected
                   id={id}

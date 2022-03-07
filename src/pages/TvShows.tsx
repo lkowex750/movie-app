@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, FocusEvent } from "react";
+import React, { useContext, useEffect, useState, FocusEvent,useMemo } from "react";
 import Layout from "../components/Layout";
 import {
   Grid,
@@ -18,16 +18,18 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Pagination,
+  Pagination,Backdrop,CircularProgress
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SortSearch from "../components/SortSearch";
-import { getListGenres } from "../Api/api";
+import { getListGenres, getMovieTvPop } from "../Api/api";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
 import PageContext from "../context/PageContext";
 import { RootObjectGenres, Genre } from "../interface/ResponseGenres";
+import { Result, RootObject } from "../interface/ResponsePropsTv";
 import Genres from "../components/Genres";
+import TvSeries from "../components/TvSeries";
 
 type Props = {};
 
@@ -44,6 +46,9 @@ const TvShows = () => {
   const [isSearchButton, setIsSearchButton] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const { isLanguageIn, setIsLanguageIn } = useContext(LanguageContext);
+  const {isPageIn,setIsPageIn} = useContext(PageContext);
+  const {isRegionIn,setIsRegionIn} = useContext(RegionContext);
+
   const obj = [
     11111111111111111111, 11111111111111111111, 11111111111111111111,
     11111111111111111111, 11111111111111111111, 11111111111111111111,
@@ -54,6 +59,21 @@ const TvShows = () => {
     11111111111111111111, 11111111111111111111,
   ];
   const [mock, setMock] = useState<Array<number>>(obj);
+  const [tvSeries,setTvSeries] = useState<RootObject["results"]>([]);
+  const [loading,setLoading] = useState<boolean>(false);
+
+
+  useEffect(()=>{
+    setLoading(false);
+    async function fetchTvShowsPop() {
+        const data = await getMovieTvPop(isPageIn,isLanguageIn);
+        console.log(isLanguageIn)
+        setTvSeries(data.results);
+        setLoading(true);
+    }
+
+    fetchTvShowsPop();
+  },[isLanguageIn]);
 
   useEffect(() => {
     async function fetchGenresList() {
@@ -75,6 +95,13 @@ const TvShows = () => {
 
     //setIsClickProps(true);
   };
+
+  const tvserieElement = useMemo(()=>{
+    console.log("useMemo")
+    return tvSeries.map((tvserie,index) =>{
+      return <TvSeries key={index} results={tvserie}></TvSeries>
+    })
+  },[tvSeries])
 
   return (
     <Layout>
@@ -197,16 +224,13 @@ const TvShows = () => {
         justifyContent="center"
         alignItems="center"
       >
-        {mock.map((item, index) => {
-          return (
-            <Grid item xs sx={{ m: "0.5rem" }}>
-              <Card key={index}>
-                <CardHeader />
-                <CardContent>{item}</CardContent>
-              </Card>
-            </Grid>
-          );
-        })}
+        {
+          loading ? tvserieElement : (
+            <Backdrop className="classes.backdrop" open>
+              <CircularProgress color="secondary"></CircularProgress>
+            </Backdrop>
+          )
+        }
       </Grid>
       <Box
         display="flex"

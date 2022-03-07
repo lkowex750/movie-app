@@ -124,7 +124,7 @@ export const getSearchMovie = async (
 
 export const getMovieTvPop = async (page: number, language: string) => {
   const getData = await axios
-    .get(api_path_pop_tv, { params: { language: language, page: page } })
+    .get(api_path_pop_tv, { params: {api_key: api_key, language: language, page: page } })
     .then((res) => res.data);
 
   return getData;

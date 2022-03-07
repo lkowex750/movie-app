@@ -13,6 +13,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import LayoutForSelectPage from "./LayoutForSelectPage";
 import FavoiritesContext from "../context/FavoritesContext";
 import StarIcon from "@mui/icons-material/Star";
+import { useParams } from "react-router-dom";
 
 function MovieSelected(value: RootObject) {
   const { id, title, backdrop_path, release_date } = useContext(MovieContext);
@@ -26,6 +27,8 @@ function MovieSelected(value: RootObject) {
   let pathPost = "https://image.tmdb.org/t/p/original";
   let setRelease_date = "";
 
+  let params = useParams();
+  console.log(params.type);
   if (backdrop_path == null) {
     path =
       "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
@@ -40,13 +43,16 @@ function MovieSelected(value: RootObject) {
 
   useEffect(() => {
     async function fetchGetMovieDetail() {
-      const data = await getMovieDetail(id, isLanguageIn, isRegionIn);
+      if (params.type === "movie") {
+        const data = await getMovieDetail(id, isLanguageIn, isRegionIn);
 
-      setPoster(pathPost + data.poster_path);
-      setMovies(data);
+        setPoster(pathPost + data.poster_path);
+        setMovies(data);
 
-      if (data.poster_path == null) {
-        setPoster(path);
+        if (data.poster_path == null) {
+          setPoster(path);
+        }
+      } else {
       }
     }
 
