@@ -28,14 +28,14 @@ const Favorites = (props: Props) => {
 
   const navigate = useNavigate();
 
-  function handleOnClicked(id: number, title: string, backdrop_path: string) {
+  function handleOnClicked(id: number, title: string, backdrop_path: string, typeMovie : string) {
     //console.warn(id);
     var str = title;
     str = str.replace(/\s+/g, "-").toLowerCase();
     str = str.replaceAll(":", "");
     str = str.replaceAll("/", "");
     str = str.replaceAll("\\", "");
-    var path = "/movie/" + str;
+    var path = (typeMovie === "movie" ? "/movie/" : "/tv/") + str;
     setId(id);
     setTitle(title);
     setBackdrop_path(backdrop_path);
@@ -54,7 +54,7 @@ const Favorites = (props: Props) => {
                   <CircularProgress color="secondary"></CircularProgress>
                 }
               >
-                <Card style={{backgroundColor: "#FBAD5B",borderRadius: 0,boxShadow: "none"}}>
+                <Card style={{backgroundColor: "#FBAD5B",borderRadius: 0,boxShadow: "none"}} >
                   <CardHeader
                     title={
                       <div
@@ -79,7 +79,8 @@ const Favorites = (props: Props) => {
                             handleOnClicked(
                               movie.id,
                               movie.title,
-                              movie.backdrop_path
+                              movie.backdrop_path,
+                              movie.typeMovie
                             );
                           }}
                         >
@@ -101,7 +102,8 @@ const Favorites = (props: Props) => {
                           handleOnClicked(
                             movie.id,
                             movie.title,
-                            movie.backdrop_path
+                            movie.backdrop_path,
+                            movie.typeMovie
                           );
                         }}
                         effect="blur"
@@ -119,7 +121,8 @@ const Favorites = (props: Props) => {
                         handleOnClicked(
                           movie.id,
                           movie.title,
-                          movie.backdrop_path
+                          movie.backdrop_path,
+                          movie.typeMovie
                         );
                       }}
                       variant={"contained"}

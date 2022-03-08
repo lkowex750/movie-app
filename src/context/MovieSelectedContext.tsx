@@ -5,10 +5,12 @@ type MovieDetailProps = {
   backdrop_path: string;
   title: string;
   release_date : string;
+  typeMovie : string;
   setId: React.Dispatch<React.SetStateAction<number>>;
   setBackdrop_path: React.Dispatch<React.SetStateAction<string>>;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   setRelease_date: React.Dispatch<React.SetStateAction<string>>;
+  setTypeMovie : React.Dispatch<React.SetStateAction<string>>
 };
 
 const MovieContext = createContext({} as MovieDetailProps);
@@ -16,12 +18,14 @@ export const MovieProvider: React.FC = (props) => {
   const idKey = "id";
   const backdropKey = "backdrop_path";
   const titleKey = "title";
-  const releaseDateKey = "release_date"
+  const releaseDateKey = "release_date";
+  const typeMovieKey = "typeMovie";
 
   const idSesion = sessionStorage.getItem(idKey);
   const backdropSesion = sessionStorage.getItem(backdropKey);
   const titleSesion = sessionStorage.getItem(titleKey);
   const releaseDateSesion = sessionStorage.getItem(releaseDateKey);
+  const typeMovieSesion = sessionStorage.getItem(typeMovieKey);
 
   const [id, setId] = useState<number>(idSesion ? JSON.parse(idSesion) : false);
   const [backdrop_path, setBackdrop_path] = useState<string>(
@@ -33,6 +37,7 @@ export const MovieProvider: React.FC = (props) => {
   const [release_date, setRelease_date] = useState<string>(
     releaseDateSesion ? JSON.parse(releaseDateSesion) : false
   );
+  const [typeMovie, setTypeMovie] = useState<string>(typeMovieSesion ? JSON.parse(typeMovieSesion) : "");
 
   useEffect(() => {
     sessionStorage.setItem(idKey, JSON.stringify(id));
@@ -50,9 +55,13 @@ export const MovieProvider: React.FC = (props) => {
     sessionStorage.setItem(releaseDateKey, JSON.stringify(release_date));
   }, [release_date]);
 
+  useEffect(() => {
+    sessionStorage.setItem(typeMovieKey, JSON.stringify(typeMovie));
+  }, [release_date]);
+
   return (
     <MovieContext.Provider
-      value={{ id, backdrop_path, title,release_date, setId, setBackdrop_path, setTitle,setRelease_date }}
+      value={{ id, backdrop_path, title,release_date,typeMovie, setId, setBackdrop_path, setTitle,setRelease_date,setTypeMovie }}
     >
       {props.children}
     </MovieContext.Provider>

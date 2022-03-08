@@ -24,7 +24,7 @@ interface Props {
 }
 
 const TvSeries = (props: Props) => {
-    const { setId, setBackdrop_path, setTitle, setRelease_date } =
+    const { setId, setBackdrop_path, setTitle, setRelease_date ,setTypeMovie} =
     useContext(MovieContext);
   let path = "https://image.tmdb.org/t/p/original" + props.results.poster_path;
   
@@ -45,6 +45,7 @@ const TvSeries = (props: Props) => {
     setTitle(props.results.name);
     setBackdrop_path(props.results.backdrop_path);
     setRelease_date(props.results.first_air_date);
+    setTypeMovie("tv");
     navigate(path);
   }
   return (

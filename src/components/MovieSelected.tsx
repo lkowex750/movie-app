@@ -4,7 +4,7 @@ import { RootObject } from "../interface/ResponseDetailMovie";
 import MovieContext from "../context/MovieSelectedContext";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
-import { getMovieDetail } from "../Api/api";
+import { getMovieDetail, getMovieDetailTv } from "../Api/api";
 import { LazyLoadComponent } from "react-lazy-load-image-component";
 import ShowMoreText from "react-show-more-text";
 import { Typography, Box, Grid, Button } from "@mui/material";
@@ -14,13 +14,15 @@ import LayoutForSelectPage from "./LayoutForSelectPage";
 import FavoiritesContext from "../context/FavoritesContext";
 import StarIcon from "@mui/icons-material/Star";
 import { useParams } from "react-router-dom";
+import { RootObjectTv } from "../interface/ResponseDetailTv";
 
 function MovieSelected(value: RootObject) {
-  const { id, title, backdrop_path, release_date } = useContext(MovieContext);
+  const { id, title, backdrop_path, release_date ,typeMovie} = useContext(MovieContext);
   const { isRegionIn } = useContext(RegionContext);
   const { isLanguageIn } = useContext(LanguageContext);
   const [poster, setPoster] = useState<string>("");
   const [movies, setMovies] = useState<RootObject>();
+  const [tvs, setTvs] = useState<RootObjectTv>();
   const { isFavoiritesIn, setIsFavoiritesIn } = useContext(FavoiritesContext);
   const [statusButton, setStatusButton] = useState<boolean>(false);
   let path = "https://image.tmdb.org/t/p/original" + backdrop_path;
@@ -51,8 +53,17 @@ function MovieSelected(value: RootObject) {
 
         if (data.poster_path == null) {
           setPoster(path);
+          setTvs(data);
         }
       } else {
+        const data = await getMovieDetailTv(id, isLanguageIn);
+
+        setPoster(pathPost + data.poster_path);
+        setTvs(data);
+        if (data.poster_path == null) {
+          setPoster(path);
+          setTvs(data);
+        }
       }
     }
 
@@ -69,19 +80,22 @@ function MovieSelected(value: RootObject) {
   }, [statusButton]);
 
   const handleSetFavoriteMovie = () => {
+    //let pathPoster = "https://image.tmdb.org/t/p/original";
+    
     let val = new Set(isFavoiritesIn);
     val.add({
       id: id,
       title: title,
-      poster: "https://image.tmdb.org/t/p/original" + movies?.poster_path,
+      poster: "https://image.tmdb.org/t/p/original" + (params.type === "movie" ? movies?.poster_path : tvs?.poster_path),
       backdrop_path: backdrop_path,
+      typeMovie : (params.type === "movie" ? "movie": "tv" )
     });
 
     setIsFavoiritesIn(Array.from(val));
     setStatusButton(true);
   };
 
-  const tryLog = () => {
+  const handleUnFav = () => {
     let val = new Set(isFavoiritesIn);
     isFavoiritesIn.forEach((e) => {
       if (e.id === id) {
@@ -121,16 +135,29 @@ function MovieSelected(value: RootObject) {
               flexDirection: "column",
             }}
           >
-            <Typography
-              variant="h1"
-              style={{
-                fontSize: "2em",
+            {params.type === "movie" ? (
+              <Typography
+                variant="h1"
+                style={{
+                  fontSize: "2em",
 
-                filter: "drop-shadow(1px 5px 4px black)",
-              }}
-            >
-              {movies?.title + " (" + setRelease_date + ") "}
-            </Typography>
+                  filter: "drop-shadow(1px 5px 4px black)",
+                }}
+              >
+                {movies?.title + " (" + setRelease_date + ") "}
+              </Typography>
+            ) : (
+              <Typography
+                variant="h1"
+                style={{
+                  fontSize: "2em",
+
+                  filter: "drop-shadow(1px 5px 4px black)",
+                }}
+              >
+                {tvs?.name + " (" + setRelease_date + ") "}
+              </Typography>
+            )}
             <br />
             <Box
               style={{
@@ -154,14 +181,25 @@ function MovieSelected(value: RootObject) {
               truncatedEndingComponent={" ... "}
               anchorClass="showmore"
             >
-              <span
-                style={{
-                  margin: "20px 0px",
-                  filter: "drop-shadow(1px 6px 6px black)",
-                }}
-              >
-                {movies?.overview}
-              </span>
+              {params.type === "movie" ? (
+                <span
+                  style={{
+                    margin: "20px 0px",
+                    filter: "drop-shadow(1px 6px 6px black)",
+                  }}
+                >
+                  {movies?.overview}
+                </span>
+              ) : (
+                <span
+                  style={{
+                    margin: "20px 0px",
+                    filter: "drop-shadow(1px 6px 6px black)",
+                  }}
+                >
+                  {tvs?.overview}
+                </span>
+              )}
             </ShowMoreText>
             <br />
             <Box style={{ display: "flex" }}>
@@ -180,7 +218,7 @@ function MovieSelected(value: RootObject) {
                     marginRight: "10px",
                     cursor: "pointer",
                   }}
-                  onClick={tryLog}
+                  onClick={handleUnFav}
                 >
                   <StarIcon />
                   <span style={{ color: "white" }}>Unfavorite</span>

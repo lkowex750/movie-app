@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, FocusEvent,useMemo } from "react";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Layout from "../components/Layout";
 import {
   Grid,
@@ -18,11 +19,11 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Pagination,Backdrop,CircularProgress
+  Pagination,Backdrop,CircularProgress,Hidden,MenuItem
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SortSearch from "../components/SortSearch";
-import { getListGenres, getMovieTvPop } from "../Api/api";
+import { getListGenres, getMovieTvPop ,getTvDiscover,getSearchTvs } from "../Api/api";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
 import PageContext from "../context/PageContext";
@@ -48,38 +49,117 @@ const TvShows = () => {
   const { isLanguageIn, setIsLanguageIn } = useContext(LanguageContext);
   const {isPageIn,setIsPageIn} = useContext(PageContext);
   const {isRegionIn,setIsRegionIn} = useContext(RegionContext);
-
-  const obj = [
-    11111111111111111111, 11111111111111111111, 11111111111111111111,
-    11111111111111111111, 11111111111111111111, 11111111111111111111,
-    11111111111111111111, 11111111111111111111, 11111111111111111111,
-    11111111111111111111, 11111111111111111111, 11111111111111111111,
-    11111111111111111111, 11111111111111111111, 11111111111111111111,
-    11111111111111111111, 11111111111111111111, 11111111111111111111,
-    11111111111111111111, 11111111111111111111,
-  ];
-  const [mock, setMock] = useState<Array<number>>(obj);
   const [tvSeries,setTvSeries] = useState<RootObject["results"]>([]);
   const [loading,setLoading] = useState<boolean>(false);
 
-
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [handleCallApi, setHandleCallApi] = useState({
+    main: true,
+    discover: false,
+    search: false,
+  });
+  var with_genres: string = "";
   useEffect(()=>{
     setLoading(false);
     async function fetchTvShowsPop() {
         const data = await getMovieTvPop(isPageIn,isLanguageIn);
         console.log(isLanguageIn)
         setTvSeries(data.results);
+        setPage(data.page);
         setLoading(true);
+
+        if (data.total_pages >= 500) {
+          setTotalPages(500);
+        } else {
+          setTotalPages(data.total_pages);
+        }
     }
 
-    fetchTvShowsPop();
-  },[isLanguageIn]);
+    async function fetchTvDiscover() {
+      const data = await getTvDiscover(isPageIn,isLanguageIn,isRegionIn,sortAction,with_genres);
+      setTvSeries(data.results);
+      setPage(data.page);
+      setLoading(true);
+      with_genres = "";
+      if (data.total_pages >= 500) {
+        setTotalPages(500);
+      } else {
+        setTotalPages(data.total_pages);
+      }
+    }
+
+    async function fetchTvSearch() {
+      const data = await getSearchTvs(isLanguageIn,searchText,isPageIn,isAdultsContents);
+      if (data === null) {
+        setTvSeries([]);
+        setPage(0);
+        setLoading(true);
+        setTotalPages(0);
+      }
+      setTvSeries(data.results);
+      setPage(data.page);
+      setLoading(true);
+
+      if (data.total_pages >= 500) {
+        setTotalPages(500);
+      } else {
+        setTotalPages(data.total_pages);
+      }
+    }
+
+    if(handleCallApi["main"]){
+      fetchTvShowsPop();
+    }else if(handleCallApi["discover"]){
+      console.log("discover");
+      if (genresId.length > 0) {
+        with_genres = "";
+        genresId.forEach((e) => {
+          with_genres += e.id + ",";
+        });
+        console.log("Adults : " + isAdultsContents);
+        with_genres = with_genres.slice(0, -1);
+      }
+
+      fetchTvDiscover();
+    }else if(handleCallApi["search"]){
+      console.log("search");
+      fetchTvSearch();
+    }
+
+    if (isSearchButton) {
+      console.log("data : " + sortAction);
+      console.log(genresId);
+      if (sortAction || genresId) {
+        setHandleCallApi({
+          ...handleCallApi,
+          ["main"]: false,
+          ["discover"]: true,
+          ["search"]: false,
+        });
+      }
+      setIsSearchButton(false);
+      console.log("Call Api : " + genresId.length);
+    }
+
+    if(isEnterSearch){
+      setHandleCallApi({
+        ...handleCallApi,
+        ["main"]: false,
+        ["discover"]: false,
+        ["search"]: true,
+      });
+      setIsEnterSearch(false);
+    }
+
+    //fetchTvShowsPop();
+  },[isLanguageIn,isPageIn,isEnterSearch,isSearchButton]);
 
   useEffect(() => {
     async function fetchGenresList() {
       const data = await getListGenres(isLanguageIn, "tv");
       setListGenres(data.genres);
-      console.log(data.genres);
+      
     }
 
     fetchGenresList();
@@ -101,7 +181,22 @@ const TvShows = () => {
     return tvSeries.map((tvserie,index) =>{
       return <TvSeries key={index} results={tvserie}></TvSeries>
     })
-  },[tvSeries])
+  },[tvSeries]);
+
+  const setSelectedPagenumber = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setIsPageIn(value);
+  };
+
+  const setSelectedLanguage = (event: SelectChangeEvent) => {
+    setIsLanguageIn(event.target.value as string);
+  };
+
+  const setSelectedRegion = (event: SelectChangeEvent) => {
+    setIsRegionIn(event.target.value as string);
+  };
 
   return (
     <Layout>
@@ -232,14 +327,114 @@ const TvShows = () => {
           )
         }
       </Grid>
-      <Box
-        display="flex"
-        justifyContent="center"
-        justifyItems="center"
-        sx={{ m: "1rem" }}
-      >
-        <Pagination count={500} page={1} siblingCount={0} />
-      </Box>
+      <Hidden smUp>
+        <Box
+          display="flex"
+          justifyContent="center"
+          justifyItems="center"
+          sx={{ m: "1rem" }}
+        >
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">{"Region"}</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={isRegionIn}
+              label={isRegionIn}
+              onChange={setSelectedRegion}
+            >
+              <MenuItem value={"US"}>US</MenuItem>
+              <MenuItem value={"TH"}>TH</MenuItem>
+              <MenuItem value={"CN"}>CN</MenuItem>
+              <MenuItem value={"JP"}>JP</MenuItem>
+            </Select>
+          </FormControl>
+          &nbsp;
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">{"Lang"}</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={isLanguageIn}
+              label={isLanguageIn}
+              onChange={setSelectedLanguage}
+            >
+              <MenuItem value={"en"}>EN</MenuItem>
+              <MenuItem value={"th"}>TH</MenuItem>
+              <MenuItem value={"cn"}>CN</MenuItem>
+              <MenuItem value={"jp"}>JP</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Box
+          display="flex"
+          justifyContent="center"
+          justifyItems="center"
+          sx={{ m: "1rem" }}
+        >
+          <Pagination
+            count={totalPages}
+            page={page}
+            siblingCount={0}
+            onChange={setSelectedPagenumber}
+          />
+        </Box>
+      </Hidden>
+      <Hidden smDown>
+        <Box display="flex" justifyContent="center" sx={{ m: "5rem" }}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            justifyItems="center"
+            sx={{ m: "1rem" }}
+          >
+            <FormControl>
+              <InputLabel id="demo-simple-select-label">{"Region"}</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={isRegionIn}
+                label={isRegionIn}
+                onChange={setSelectedRegion}
+              >
+                <MenuItem value={"US"}>US</MenuItem>
+                <MenuItem value={"TH"}>TH</MenuItem>
+                <MenuItem value={"CN"}>CN</MenuItem>
+                <MenuItem value={"JP"}>JP</MenuItem>
+              </Select>
+            </FormControl>
+            &nbsp;
+            <FormControl>
+              <InputLabel id="demo-simple-select-label">{"Lang"}</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={isLanguageIn}
+                label={isLanguageIn}
+                onChange={setSelectedLanguage}
+              >
+                <MenuItem value={"en"}>EN</MenuItem>
+                <MenuItem value={"th"}>TH</MenuItem>
+                <MenuItem value={"cn"}>CN</MenuItem>
+                <MenuItem value={"jp"}>JP</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+          <Box
+            display="flex"
+            justifyContent="center"
+            justifyItems="center"
+            sx={{ m: "2rem" }}
+          >
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={setSelectedPagenumber}
+            />
+          </Box>
+        </Box>
+      </Hidden>
     </Layout>
   );
 };

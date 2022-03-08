@@ -3,4 +3,5 @@ export interface FavProps {
   title: string;
   poster: string;
   backdrop_path: string;
+  typeMovie : string;
 }

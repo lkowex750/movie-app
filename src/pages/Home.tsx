@@ -12,7 +12,12 @@ import React, {
 import Layout from "../components/Layout";
 import Movie from "../components/Movie";
 import { RootObject } from "../interface/ResponseProps";
-import { getPopularMovie, getMoviesDiscover, getListGenres ,getSearchMovie} from "../Api/api";
+import {
+  getPopularMovie,
+  getMoviesDiscover,
+  getListGenres,
+  getSearchMovie,
+} from "../Api/api";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
 import PageContext from "../context/PageContext";
@@ -69,7 +74,7 @@ const Home = () => {
   const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false);
   const [test, setTest] = useState<string>("");
   const [isAdultsContents, setIsAdlutsContents] = useState<boolean>(false);
-  const [isFocus,setIsFocus] = useState<boolean>(false);
+  const [isFocus, setIsFocus] = useState<boolean>(false);
   var with_genres: string = "";
   //const valueRef = useRef<HTMLInputElement>(null);
 
@@ -110,14 +115,20 @@ const Home = () => {
     }
 
     async function fetchSearchMovies() {
-      console.log(searchText)
-      const data = await getSearchMovie(isLanguageIn,searchText,isPageIn,isAdultsContents,isRegionIn);
-      
-      if(data === null){
+      console.log(searchText);
+      const data = await getSearchMovie(
+        isLanguageIn,
+        searchText,
+        isPageIn,
+        isAdultsContents,
+        isRegionIn
+      );
+
+      if (data === null) {
         setMovies([]);
-      setPage(0);
-      setLoading(true);
-      setTotalPages(0);
+        setPage(0);
+        setLoading(true);
+        setTotalPages(0);
       }
       setMovies(data.results);
       setPage(data.page);
@@ -128,7 +139,6 @@ const Home = () => {
       } else {
         setTotalPages(data.total_pages);
       }
-
     }
 
     if (handleCallApi["main"]) {
@@ -178,7 +188,7 @@ const Home = () => {
 
   useEffect(() => {
     async function fetchListGenres() {
-      const data = await getListGenres(isLanguageIn,"movie");
+      const data = await getListGenres(isLanguageIn, "movie");
       console.log(data.genres);
       setListGenres(data.genres);
       //console.log(listGenres);
@@ -211,12 +221,12 @@ const Home = () => {
 
   const handleOnChangeTextSearch = (event: FocusEvent<HTMLInputElement>) => {
     //console.log(event.target.value)
-    
+
     setSearchText(event.target.value);
-    if(event.target.value.length > 0){
+    if (event.target.value.length > 0) {
       setIsFocus(true);
     }
-    
+
     //setIsClickProps(true);
   };
 
@@ -234,13 +244,18 @@ const Home = () => {
             label="Search"
             variant="outlined"
             fullWidth
-            onChange={(e) => {if(e.target.value.length >0){setIsFocus(true)}else{setIsFocus(false)}}}
+            onChange={(e) => {
+              if (e.target.value.length > 0) {
+                setIsFocus(true);
+              } else {
+                setIsFocus(false);
+              }
+            }}
             onBlur={handleOnChangeTextSearch}
           />
         </Grid>
         <Grid item xs={12} margin={1} lg={12}>
           {isClickProps || isFilterClicked || isFocus ? (
-            
             <Button
               variant="contained"
               fullWidth
@@ -250,20 +265,19 @@ const Home = () => {
               onClick={() => {
                 setIsClickProps(false);
                 setIsFilterClicked(false);
-                setTest("1"); 
-                if(isFocus){
+                setTest("1");
+                if (isFocus) {
                   setIsFocus(false);
                   setIsEnterSearch(true);
-                }else{
+                } else {
                   setIsSearchButton(true);
-                }          
-                
+                }
               }}
             >
               Search
             </Button>
           ) : null}
-          
+
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -276,7 +290,7 @@ const Home = () => {
               <FormControl fullWidth>
                 <InputLabel id="sorting">Sort Results By</InputLabel>
                 <SortSearch
-                typeMovie="movie"
+                  typeMovie="movie"
                   setSortAction={setSortAction}
                   setOnClicked={setIsClickProps}
                 ></SortSearch>

@@ -9,6 +9,9 @@ const api_path_list_genres = process.env.REACT_APP_API_LIST_GENRES + "";
 const api_path_list_genres_tv = process.env.REACT_APP_API_LIST_GENRES_TV + "";
 const api_path_search_movie = process.env.REACT_APP_API_SEARCH_MOVIE + "";
 const api_path_pop_tv = process.env.REACT_APP_API_PATH_POPULAR_TV + "";
+const api_path_tv_detail = process.env.REACT_APP_API_PATH_DETAIL_TV + "";
+const api_path_discover_tv = process.env.REACT_APP_API_DISCOVER_TV + "";
+const api_path_search_tv = process.env.REACT_APP_API_SEARCH_TV + "";
 const api_key = process.env.REACT_APP_API_KEY;
 
 const languageObjActive = ["en", "th"];
@@ -124,7 +127,66 @@ export const getSearchMovie = async (
 
 export const getMovieTvPop = async (page: number, language: string) => {
   const getData = await axios
-    .get(api_path_pop_tv, { params: {api_key: api_key, language: language, page: page } })
+    .get(api_path_pop_tv, {
+      params: { api_key: api_key, language: language, page: page },
+    })
+    .then((res) => res.data);
+
+  return getData;
+};
+
+export const getMovieDetailTv = async (id: number, language: string) => {
+  const getData = await axios
+    .get(api_path_tv_detail + id, {
+      params: { api_key: api_key, language: language },
+    })
+    .then((res) => res.data);
+
+  return getData;
+};
+
+export const getTvDiscover = async (
+  page: number,
+  language: string,
+  region: string,
+  sort_by: string,
+  with_genres: string
+) => {
+  const getData = await axios
+    .get(api_path_discover_tv, {
+      params: {
+        api_key: api_key,
+        language: language,
+        sort_by: sort_by,
+        page: page,
+        with_genres: with_genres,
+        
+      },
+    })
+    .then((res) => res.data);
+
+  return getData;
+};
+
+export const getSearchTvs = async (
+  language: string,
+  query: string,
+  page: number,
+  include_adult: boolean
+) => {
+  if (query == "" || query === null) {
+    return null;
+  }
+  const getData = await axios
+    .get(api_path_search_tv, {
+      params: {
+        api_key: api_key,
+        language: language,
+        page: page,
+        query: query,
+        include_adult: include_adult,
+      },
+    })
     .then((res) => res.data);
 
   return getData;

@@ -25,7 +25,7 @@ interface Props {
 }
 
 const Movie = (props: Props) => {
-  const { setId, setBackdrop_path, setTitle, setRelease_date } =
+  const { setId, setBackdrop_path, setTitle, setRelease_date ,setTypeMovie} =
     useContext(MovieContext);
 
   const navigate = useNavigate();
@@ -41,6 +41,7 @@ const Movie = (props: Props) => {
     setTitle(props.results.title);
     setBackdrop_path(props.results.backdrop_path);
     setRelease_date(props.results.release_date);
+    setTypeMovie("movie");
     navigate(path);
   };
 

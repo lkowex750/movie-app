@@ -13,7 +13,7 @@ import TvShows from "../pages/TvShows";
 
 
 function App() {
-  const { id, backdrop_path, title,release_date } = useContext(MovieContext);
+  const { id, backdrop_path, title,release_date,typeMovie } = useContext(MovieContext);
   const pathMovieDetail = "/movie/" + id;
   return (
     <Container maxWidth="xl" className="bg-container">
@@ -31,6 +31,7 @@ function App() {
                   backdrop_path={backdrop_path}
                   title={title}
                   release_date={release_date}
+                  
                 />
               }
             />

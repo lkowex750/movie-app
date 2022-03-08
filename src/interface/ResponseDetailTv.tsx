@@ -59,7 +59,7 @@ export interface SpokenLanguage {
     name: string;
 }
 
-export interface RootObject {
+export interface RootObjectTv {
     adult: boolean;
     backdrop_path: string;
     created_by: CreatedBy[];
