@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext} from "react";
 import { Result } from "../interface/ResponseProps";
 import "./style/Movie.css";
 import MovieContext from "../context/MovieSelectedContext";

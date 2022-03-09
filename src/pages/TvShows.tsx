@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, FocusEvent,useMemo } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  FocusEvent,
+  useMemo,
+} from "react";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Layout from "../components/Layout";
 import {
@@ -14,16 +20,21 @@ import {
   Switch,
   FormControlLabel,
   Button,
-  Skeleton,
   Box,
-  Card,
-  CardHeader,
-  CardContent,
-  Pagination,Backdrop,CircularProgress,Hidden,MenuItem
+  Pagination,
+  Backdrop,
+  CircularProgress,
+  Hidden,
+  MenuItem,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SortSearch from "../components/SortSearch";
-import { getListGenres, getMovieTvPop ,getTvDiscover,getSearchTvs } from "../Api/api";
+import {
+  getListGenres,
+  getMovieTvPop,
+  getTvDiscover,
+  getSearchTvs,
+} from "../Api/api";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
 import PageContext from "../context/PageContext";
@@ -47,10 +58,10 @@ const TvShows = () => {
   const [isSearchButton, setIsSearchButton] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const { isLanguageIn, setIsLanguageIn } = useContext(LanguageContext);
-  const {isPageIn,setIsPageIn} = useContext(PageContext);
-  const {isRegionIn,setIsRegionIn} = useContext(RegionContext);
-  const [tvSeries,setTvSeries] = useState<RootObject["results"]>([]);
-  const [loading,setLoading] = useState<boolean>(false);
+  const { isPageIn, setIsPageIn } = useContext(PageContext);
+  const { isRegionIn, setIsRegionIn } = useContext(RegionContext);
+  const [tvSeries, setTvSeries] = useState<RootObject["results"]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -60,24 +71,29 @@ const TvShows = () => {
     search: false,
   });
   var with_genres: string = "";
-  useEffect(()=>{
+  useEffect(() => {
     setLoading(false);
     async function fetchTvShowsPop() {
-        const data = await getMovieTvPop(isPageIn,isLanguageIn);
-        console.log(isLanguageIn)
-        setTvSeries(data.results);
-        setPage(data.page);
-        setLoading(true);
+      const data = await getMovieTvPop(isPageIn, isLanguageIn);
+      setTvSeries(data.results);
+      setPage(data.page);
+      setLoading(true);
 
-        if (data.total_pages >= 500) {
-          setTotalPages(500);
-        } else {
-          setTotalPages(data.total_pages);
-        }
+      if (data.total_pages >= 500) {
+        setTotalPages(500);
+      } else {
+        setTotalPages(data.total_pages);
+      }
     }
 
     async function fetchTvDiscover() {
-      const data = await getTvDiscover(isPageIn,isLanguageIn,isRegionIn,sortAction,with_genres);
+      const data = await getTvDiscover(
+        isPageIn,
+        isLanguageIn,
+        isRegionIn,
+        sortAction,
+        with_genres
+      );
       setTvSeries(data.results);
       setPage(data.page);
       setLoading(true);
@@ -90,7 +106,13 @@ const TvShows = () => {
     }
 
     async function fetchTvSearch() {
-      const data = await getSearchTvs(isLanguageIn,searchText,isPageIn,isAdultsContents);
+      setIsPageIn(1);
+      const data = await getSearchTvs(
+        isLanguageIn,
+        searchText,
+        isPageIn,
+        isAdultsContents
+      );
       if (data === null) {
         setTvSeries([]);
         setPage(0);
@@ -108,28 +130,28 @@ const TvShows = () => {
       }
     }
 
-    if(handleCallApi["main"]){
+    if (handleCallApi["main"]) {
       fetchTvShowsPop();
-    }else if(handleCallApi["discover"]){
-      console.log("discover");
+    } else if (handleCallApi["discover"]) {
+      //console.log("discover");
       if (genresId.length > 0) {
         with_genres = "";
         genresId.forEach((e) => {
           with_genres += e.id + ",";
         });
-        console.log("Adults : " + isAdultsContents);
+        //console.log("Adults : " + isAdultsContents);
         with_genres = with_genres.slice(0, -1);
       }
 
       fetchTvDiscover();
-    }else if(handleCallApi["search"]){
-      console.log("search");
+    } else if (handleCallApi["search"]) {
+      //console.log("search");
       fetchTvSearch();
     }
 
     if (isSearchButton) {
-      console.log("data : " + sortAction);
-      console.log(genresId);
+      //console.log("data : " + sortAction);
+      //console.log(genresId);
       if (sortAction || genresId) {
         setHandleCallApi({
           ...handleCallApi,
@@ -139,10 +161,10 @@ const TvShows = () => {
         });
       }
       setIsSearchButton(false);
-      console.log("Call Api : " + genresId.length);
+      //ฝฝconsole.log("Call Api : " + genresId.length);
     }
 
-    if(isEnterSearch){
+    if (isEnterSearch) {
       setHandleCallApi({
         ...handleCallApi,
         ["main"]: false,
@@ -153,13 +175,12 @@ const TvShows = () => {
     }
 
     //fetchTvShowsPop();
-  },[isLanguageIn,isPageIn,isEnterSearch,isSearchButton]);
+  }, [isLanguageIn, isPageIn, isEnterSearch, isSearchButton]);
 
   useEffect(() => {
     async function fetchGenresList() {
       const data = await getListGenres(isLanguageIn, "tv");
       setListGenres(data.genres);
-      
     }
 
     fetchGenresList();
@@ -176,12 +197,11 @@ const TvShows = () => {
     //setIsClickProps(true);
   };
 
-  const tvserieElement = useMemo(()=>{
-    console.log("useMemo")
-    return tvSeries.map((tvserie,index) =>{
-      return <TvSeries key={index} results={tvserie}></TvSeries>
-    })
-  },[tvSeries]);
+  const tvserieElement = useMemo(() => {
+    return tvSeries.map((tvserie, index) => {
+      return <TvSeries key={index} results={tvserie}></TvSeries>;
+    });
+  }, [tvSeries]);
 
   const setSelectedPagenumber = (
     event: React.ChangeEvent<unknown>,
@@ -204,7 +224,8 @@ const TvShows = () => {
         <Grid item xs={12} margin={1}>
           <TextField
             label="Search"
-            variant="outlined"
+            variant="filled"
+            color="primary"
             fullWidth
             onChange={(e) => {
               if (e.target.value.length > 0) {
@@ -252,7 +273,7 @@ const TvShows = () => {
               <FormControl fullWidth>
                 <InputLabel id="sorting">Sort Results By</InputLabel>
                 <SortSearch
-                typeMovie="tv"
+                  typeMovie="tv"
                   setSortAction={setSortAction}
                   setOnClicked={setIsClickProps}
                 ></SortSearch>
@@ -319,13 +340,13 @@ const TvShows = () => {
         justifyContent="center"
         alignItems="center"
       >
-        {
-          loading ? tvserieElement : (
-            <Backdrop className="classes.backdrop" open>
-              <CircularProgress color="secondary"></CircularProgress>
-            </Backdrop>
-          )
-        }
+        {loading ? (
+          tvserieElement
+        ) : (
+          <Backdrop className="classes.backdrop" open>
+            <CircularProgress color="secondary"></CircularProgress>
+          </Backdrop>
+        )}
       </Grid>
       <Hidden smUp>
         <Box

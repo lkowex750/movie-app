@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { PropsDiscover } from "../interface/RequestDiscover";
 
 const api_path_pop = process.env.REACT_APP_API_PATH_POPULAR + "";
 const api_path_movie_detail = process.env.REACT_APP_API_PATH_MOVIEDETAIL + "";
@@ -14,7 +13,6 @@ const api_path_discover_tv = process.env.REACT_APP_API_DISCOVER_TV + "";
 const api_path_search_tv = process.env.REACT_APP_API_SEARCH_TV + "";
 const api_key = process.env.REACT_APP_API_KEY;
 
-const languageObjActive = ["en", "th"];
 
 export const getPopularMovie = async (
   page: number,
@@ -160,7 +158,6 @@ export const getTvDiscover = async (
         sort_by: sort_by,
         page: page,
         with_genres: with_genres,
-        
       },
     })
     .then((res) => res.data);
@@ -187,6 +184,53 @@ export const getSearchTvs = async (
         include_adult: include_adult,
       },
     })
+    .then((res) => res.data);
+
+  return getData;
+};
+
+export const getCredits = async (
+  id: number,
+  language: string,
+  typeMovie: string
+) => {
+  const getData = await axios
+    .get(
+      "https://api.themoviedb.org/3/" +
+        (typeMovie === "movie" ? "movie/" : "tv/") +
+        id +
+        "/credits",
+      {
+        params: {
+          api_key: api_key,
+          language: language,
+        },
+      }
+    )
+    .then((res) => res.data);
+
+  return getData;
+};
+
+export const getMovieReviews = async (
+  id: number,
+  language: string,
+  typeMovie: string
+) => {
+  const getData = await axios
+    .get(
+      "https://api.themoviedb.org/3/" +
+        (typeMovie === "movie" ? "movie/" : "tv/") +
+        id +
+        "/reviews",
+      {
+        params: {
+          api_key: api_key,
+          language: language,
+          page: 1,
+        },
+      }
+    )
     .then((res) => res.data);
 
   return getData;

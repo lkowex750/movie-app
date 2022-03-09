@@ -1,13 +1,9 @@
 import React, {
   useState,
   useEffect,
-  ChangeEvent,
   FocusEvent,
   useMemo,
   useContext,
-  Dispatch,
-  SetStateAction,
-  useRef,
 } from "react";
 import Layout from "../components/Layout";
 import Movie from "../components/Movie";
@@ -115,7 +111,8 @@ const Home = () => {
     }
 
     async function fetchSearchMovies() {
-      console.log(searchText);
+      //console.log(searchText);
+      setIsPageIn(1);
       const data = await getSearchMovie(
         isLanguageIn,
         searchText,
@@ -144,25 +141,25 @@ const Home = () => {
     if (handleCallApi["main"]) {
       fetchGetPopMovies();
     } else if (handleCallApi["discover"]) {
-      console.log(genresId.length);
+      //console.log(genresId.length);
       if (genresId.length > 0) {
         with_genres = "";
         genresId.forEach((e) => {
           with_genres += e.id + ",";
         });
-        console.log("Adults : " + isAdultsContents);
+        //console.log("Adults : " + isAdultsContents);
         with_genres = with_genres.slice(0, -1);
       }
 
       fetchGetDiscoverMovie();
     } else if (handleCallApi["search"]) {
-      console.log("Call Search Only");
+      //console.log("Call Search Only");
       fetchSearchMovies();
     }
 
     if (isSearchButton) {
-      console.log("data : " + sortAction);
-      console.log(genresId);
+      //console.log("data : " + sortAction);
+      //console.log(genresId);
       if (sortAction || genresId) {
         setHandleCallApi({
           ...handleCallApi,
@@ -172,7 +169,7 @@ const Home = () => {
         });
       }
       setIsSearchButton(false);
-      console.log("Call Api : " + genresId.length);
+      //console.log("Call Api : " + genresId.length);
     }
 
     if (isEnterSearch) {
@@ -189,7 +186,7 @@ const Home = () => {
   useEffect(() => {
     async function fetchListGenres() {
       const data = await getListGenres(isLanguageIn, "movie");
-      console.log(data.genres);
+      //console.log(data.genres);
       setListGenres(data.genres);
       //console.log(listGenres);
     }
@@ -198,7 +195,7 @@ const Home = () => {
   }, [isLanguageIn]);
 
   const movieElements = useMemo(() => {
-    console.log("useMemo");
+    //console.log("useMemo");
     return movies.map((movie, index) => {
       return <Movie key={index} results={movie} />;
     });
@@ -230,11 +227,6 @@ const Home = () => {
     //setIsClickProps(true);
   };
 
-  function handleCallApiSearch() {
-    console.log(isAdultsContents);
-    console.log("run");
-  }
-
   return (
     <Layout>
       <Grid>
@@ -242,7 +234,8 @@ const Home = () => {
           <TextField
             id="standard-basic"
             label="Search"
-            variant="outlined"
+            variant="filled"
+            color="primary"
             fullWidth
             onChange={(e) => {
               if (e.target.value.length > 0) {

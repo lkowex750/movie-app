@@ -2,7 +2,6 @@ import React, { useContext, useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import FavoiritesContext from "../context/FavoritesContext";
 import {
-  Backdrop,
   CircularProgress,
   Grid,
   Card,
@@ -28,7 +27,12 @@ const Favorites = (props: Props) => {
 
   const navigate = useNavigate();
 
-  function handleOnClicked(id: number, title: string, backdrop_path: string, typeMovie : string) {
+  function handleOnClicked(
+    id: number,
+    title: string,
+    backdrop_path: string,
+    typeMovie: string
+  ) {
     //console.warn(id);
     var str = title;
     str = str.replace(/\s+/g, "-").toLowerCase();
@@ -43,61 +47,44 @@ const Favorites = (props: Props) => {
     navigate(path);
   }
   const favoisElements = useMemo(() => {
-    console.log(isFavoiritesIn.length);
+    
     if (isFavoiritesIn.length > 0) {
-      return isFavoiritesIn.map((movie) => {
+      return isFavoiritesIn.map((movie, index) => {
         return (
-          <>
-            <Grid item xs sx={{ m: "0.5rem" }} key={movie.id}>
-              <LazyLoadComponent
-                placeholder={
-                  <CircularProgress color="secondary"></CircularProgress>
-                }
+          <Grid item xs sx={{ m: "0.5rem" }} key={index}>
+            <LazyLoadComponent
+              placeholder={
+                <CircularProgress color="secondary"></CircularProgress>
+              }
+              key={index}
+            >
+              <Card
+                style={{
+                  backgroundColor: "#FBAD5B",
+                  borderRadius: 0,
+                  boxShadow: "none",
+                }}
+                key={index}
               >
-                <Card style={{backgroundColor: "#FBAD5B",borderRadius: 0,boxShadow: "none"}} >
-                  <CardHeader
-                    title={
-                      <div
-                        style={{
-                          overflow: "hidden",
-                          width: "11rem",
-                        }}
-                      >
-                        <Typography
-                          component="div"
-                          sx={{
-                            fontSize: 20,
-                            fontWeight: 600,
-                            textOverflow: "ellipsis",
-                            cursor: "pointer",
-                            
-                          }}
-                          color="white"
-                          noWrap
-                          gutterBottom
-                          onClick={() => {
-                            handleOnClicked(
-                              movie.id,
-                              movie.title,
-                              movie.backdrop_path,
-                              movie.typeMovie
-                            );
-                          }}
-                        >
-                          {movie.title}
-                        </Typography>
-                      </div>
-                    }
-                  />
-                  <CardContent>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      justifyItems="center"
+                <CardHeader
+                  title={
+                    <div
+                      style={{
+                        overflow: "hidden",
+                        width: "11rem",
+                      }}
                     >
-                      <LazyLoadImage
-                        src={movie.poster}
-                        style={{ width: "100%", height: "370px" }}
+                      <Typography
+                        component="div"
+                        sx={{
+                          fontSize: 20,
+                          fontWeight: 600,
+                          textOverflow: "ellipsis",
+                          cursor: "pointer",
+                        }}
+                        color="white"
+                        noWrap
+                        gutterBottom
                         onClick={() => {
                           handleOnClicked(
                             movie.id,
@@ -106,17 +93,21 @@ const Favorites = (props: Props) => {
                             movie.typeMovie
                           );
                         }}
-                        effect="blur"
-                      />
-                    </Box>
-
-                    {/* <img src={path} style={{ width: "100%", height: "400px" }} onClick={handleOnClicked} loading="lazy"></img> */}
-
-                    
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      size="small"
+                      >
+                        {movie.title}
+                      </Typography>
+                    </div>
+                  }
+                />
+                <CardContent>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    justifyItems="center"
+                  >
+                    <LazyLoadImage
+                      src={movie.poster}
+                      style={{ width: "100%", height: "370px" }}
                       onClick={() => {
                         handleOnClicked(
                           movie.id,
@@ -125,16 +116,32 @@ const Favorites = (props: Props) => {
                           movie.typeMovie
                         );
                       }}
-                      variant={"contained"}
-                      fullWidth
-                    >
-                      View Detail
-                    </Button>
-                  </CardActions>
-                </Card>
-              </LazyLoadComponent>
-            </Grid>
-          </>
+                      effect="blur"
+                    />
+                  </Box>
+
+                  {/* <img src={path} style={{ width: "100%", height: "400px" }} onClick={handleOnClicked} loading="lazy"></img> */}
+                </CardContent>
+                <CardActions>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      handleOnClicked(
+                        movie.id,
+                        movie.title,
+                        movie.backdrop_path,
+                        movie.typeMovie
+                      );
+                    }}
+                    variant={"contained"}
+                    fullWidth
+                  >
+                    View Detail
+                  </Button>
+                </CardActions>
+              </Card>
+            </LazyLoadComponent>
+          </Grid>
         );
       });
     } else {

@@ -4,20 +4,42 @@ import { RootObject } from "../interface/ResponseDetailMovie";
 import MovieContext from "../context/MovieSelectedContext";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
-import { getMovieDetail, getMovieDetailTv } from "../Api/api";
-import { LazyLoadComponent } from "react-lazy-load-image-component";
+import {
+  getMovieDetail,
+  getMovieDetailTv,
+  getCredits,
+  getMovieReviews,
+} from "../Api/api";
+import {
+  LazyLoadComponent,
+  LazyLoadImage,
+} from "react-lazy-load-image-component";
 import ShowMoreText from "react-show-more-text";
-import { Typography, Box, Grid, Button } from "@mui/material";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import InfoIcon from "@mui/icons-material/Info";
+import {
+  Typography,
+  Box,
+  Grid,
+  Button,
+  Card,
+  CardHeader,
+  CardContent,
+  Link,
+  TextareaAutosize,
+  Avatar,
+  Rating,
+} from "@mui/material";
+
 import LayoutForSelectPage from "./LayoutForSelectPage";
 import FavoiritesContext from "../context/FavoritesContext";
 import StarIcon from "@mui/icons-material/Star";
 import { useParams } from "react-router-dom";
 import { RootObjectTv } from "../interface/ResponseDetailTv";
+import { Credits } from "../interface/ResponseCastProps";
+import { Reviews } from "../interface/ResponseReviews";
 
 function MovieSelected(value: RootObject) {
-  const { id, title, backdrop_path, release_date ,typeMovie} = useContext(MovieContext);
+  const { id, title, backdrop_path, release_date, typeMovie } =
+    useContext(MovieContext);
   const { isRegionIn } = useContext(RegionContext);
   const { isLanguageIn } = useContext(LanguageContext);
   const [poster, setPoster] = useState<string>("");
@@ -25,12 +47,14 @@ function MovieSelected(value: RootObject) {
   const [tvs, setTvs] = useState<RootObjectTv>();
   const { isFavoiritesIn, setIsFavoiritesIn } = useContext(FavoiritesContext);
   const [statusButton, setStatusButton] = useState<boolean>(false);
+  const [cast, setCast] = useState<Credits["cast"]>([]);
+  const [reviews, setReviews] = useState<Reviews["results"]>([]);
   let path = "https://image.tmdb.org/t/p/original" + backdrop_path;
   let pathPost = "https://image.tmdb.org/t/p/original";
+
   let setRelease_date = "";
 
   let params = useParams();
-  console.log(params.type);
   if (backdrop_path == null) {
     path =
       "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
@@ -47,9 +71,13 @@ function MovieSelected(value: RootObject) {
     async function fetchGetMovieDetail() {
       if (params.type === "movie") {
         const data = await getMovieDetail(id, isLanguageIn, isRegionIn);
+        const credits = await getCredits(id, isLanguageIn, "movie");
+        const reviewsData = await getMovieReviews(id, isLanguageIn, "movie");
 
+        setCast(credits.cast);
         setPoster(pathPost + data.poster_path);
         setMovies(data);
+        setReviews(reviewsData.results);
 
         if (data.poster_path == null) {
           setPoster(path);
@@ -57,7 +85,10 @@ function MovieSelected(value: RootObject) {
         }
       } else {
         const data = await getMovieDetailTv(id, isLanguageIn);
-
+        const credits = await getCredits(id, isLanguageIn, "tv");
+        const reviewsData = await getMovieReviews(id, isLanguageIn, "tv");
+        setReviews(reviewsData.results);
+        setCast(credits.cast);
         setPoster(pathPost + data.poster_path);
         setTvs(data);
         if (data.poster_path == null) {
@@ -73,7 +104,6 @@ function MovieSelected(value: RootObject) {
   useEffect(() => {
     isFavoiritesIn.forEach((e) => {
       if (e.id === id) {
-        console.log(e.id);
         return setStatusButton(true);
       }
     });
@@ -81,14 +111,16 @@ function MovieSelected(value: RootObject) {
 
   const handleSetFavoriteMovie = () => {
     //let pathPoster = "https://image.tmdb.org/t/p/original";
-    
+
     let val = new Set(isFavoiritesIn);
     val.add({
       id: id,
       title: title,
-      poster: "https://image.tmdb.org/t/p/original" + (params.type === "movie" ? movies?.poster_path : tvs?.poster_path),
+      poster:
+        "https://image.tmdb.org/t/p/original" +
+        (params.type === "movie" ? movies?.poster_path : tvs?.poster_path),
       backdrop_path: backdrop_path,
-      typeMovie : (params.type === "movie" ? "movie": "tv" )
+      typeMovie: params.type === "movie" ? "movie" : "tv",
     });
 
     setIsFavoiritesIn(Array.from(val));
@@ -105,6 +137,57 @@ function MovieSelected(value: RootObject) {
     setIsFavoiritesIn(Array.from(val));
     setStatusButton(false);
   };
+
+  const reviewElements = reviews.map((review, index) => {
+    let ava_path = "https://image.tmdb.org/t/p/original";
+    var date = new Date(review.updated_at);
+    if (review.author_details.avatar_path !== null) {
+      const checkHttps: Array<string> =
+        review.author_details.avatar_path.split("/");
+
+      if (checkHttps[1] === "https:") {
+        ava_path = review.author_details.avatar_path.substring(1);
+      } else {
+        ava_path = ava_path + review.author_details.avatar_path;
+      }
+    } else {
+      ava_path =
+        "https://i.pinimg.com/originals/d6/7f/cb/d67fcb293e7ab5d6fdd92cb9bc639b3b.png";
+    }
+    return (
+      <Grid item key={index} marginBottom={1}>
+        <Card>
+          <CardHeader
+            avatar={<Avatar aria-label={review.author} src={ava_path}></Avatar>}
+            title={<Typography fontWeight={600}>{review.author}</Typography>}
+            action={
+              <Box>
+                <Rating
+                  name="text-feedback"
+                  value={review.author_details.rating / 2}
+                  readOnly
+                  precision={0.5}
+                  emptyIcon={
+                    <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
+                  }
+                />
+              </Box>
+            }
+            subheader={date.toUTCString()}
+          />
+          <CardContent>
+            <TextareaAutosize
+              maxRows={5}
+              aria-label="maximum height"
+              placeholder="Maximum 4 rows"
+              defaultValue={review.content}
+              style={{ width: "100%", border: "none", resize: "none" }}
+            />
+          </CardContent>
+        </Card>
+      </Grid>
+    );
+  });
 
   return (
     <LazyLoadComponent>
@@ -247,6 +330,77 @@ function MovieSelected(value: RootObject) {
             </Box>
           </Grid>
         </Grid>
+
+        <Typography
+          variant="h4"
+          fontWeight={600}
+          marginTop={2}
+          marginBottom={2}
+        >
+          Cast
+        </Typography>
+
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          marginBottom={2}
+        >
+          {cast.slice(0, 6).map((item) => {
+            var profilePath = pathPost;
+            if (item.profile_path === null) {
+              profilePath =
+                "https://i.pinimg.com/originals/d6/7f/cb/d67fcb293e7ab5d6fdd92cb9bc639b3b.png";
+            } else {
+              profilePath = profilePath + item.profile_path;
+            }
+            return (
+              <Grid item xs={5} lg={2} md={3} key={item.id}>
+                <Card style={{ height: "320px" }}>
+                  <CardContent>
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      justifyItems="center"
+                    >
+                      <LazyLoadImage
+                        src={profilePath}
+                        style={{ width: "100%", height: "200px" }}
+                        effect="blur"
+                      />
+                    </Box>
+                    <Box>
+                      <Typography fontWeight={600}>{item.name}</Typography>
+                      <Typography color="gray">{item.character}</Typography>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Link underline="none" style={{ cursor: "pointer" }}>
+            <Typography fontWeight={600}>Full Cast & Crew</Typography>
+          </Link>
+        </Grid>
+        {reviews.length > 0 ? (
+          <Grid marginTop={3}>
+            <Typography variant="h4" fontWeight={600}>
+              Review
+            </Typography>
+            <br />
+            {reviewElements}
+          </Grid>
+        ) : null}
+        <br />
       </LayoutForSelectPage>
     </LazyLoadComponent>
   );
