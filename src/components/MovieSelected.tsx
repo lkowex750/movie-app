@@ -36,6 +36,7 @@ import { useParams } from "react-router-dom";
 import { RootObjectTv } from "../interface/ResponseDetailTv";
 import { Credits } from "../interface/ResponseCastProps";
 import { Reviews } from "../interface/ResponseReviews";
+import {useTranslation} from "react-i18next";
 
 function MovieSelected(value: RootObject) {
   const { id, title, backdrop_path, release_date, typeMovie } =
@@ -49,6 +50,7 @@ function MovieSelected(value: RootObject) {
   const [statusButton, setStatusButton] = useState<boolean>(false);
   const [cast, setCast] = useState<Credits["cast"]>([]);
   const [reviews, setReviews] = useState<Reviews["results"]>([]);
+  const {t} = useTranslation();
   let path = "https://image.tmdb.org/t/p/original" + backdrop_path;
   let pathPost = "https://image.tmdb.org/t/p/original";
 
@@ -181,6 +183,7 @@ function MovieSelected(value: RootObject) {
               aria-label="maximum height"
               placeholder="Maximum 4 rows"
               defaultValue={review.content}
+              readOnly
               style={{ width: "100%", border: "none", resize: "none" }}
             />
           </CardContent>
@@ -304,7 +307,7 @@ function MovieSelected(value: RootObject) {
                   onClick={handleUnFav}
                 >
                   <StarIcon />
-                  <span style={{ color: "white" }}>Unfavorite</span>
+                  <span style={{ color: "white" }}>{t('unfav_button')}</span>
                 </Button>
               ) : (
                 <Button
@@ -324,7 +327,7 @@ function MovieSelected(value: RootObject) {
                   onClick={handleSetFavoriteMovie}
                 >
                   <StarIcon />
-                  <span style={{ color: "white" }}>favorite</span>
+                  <span style={{ color: "white" }}>{t('fav_button')}</span>
                 </Button>
               )}
             </Box>
@@ -337,7 +340,7 @@ function MovieSelected(value: RootObject) {
           marginTop={2}
           marginBottom={2}
         >
-          Cast
+          {t('cast')}
         </Typography>
 
         <Grid
@@ -388,13 +391,13 @@ function MovieSelected(value: RootObject) {
           alignItems="center"
         >
           <Link underline="none" style={{ cursor: "pointer" }}>
-            <Typography fontWeight={600}>Full Cast & Crew</Typography>
+            <Typography fontWeight={600}>{t('fullCast')}</Typography>
           </Link>
         </Grid>
         {reviews.length > 0 ? (
           <Grid marginTop={3}>
             <Typography variant="h4" fontWeight={600}>
-              Review
+              {t('review')}
             </Typography>
             <br />
             {reviewElements}

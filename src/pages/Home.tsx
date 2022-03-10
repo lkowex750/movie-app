@@ -43,7 +43,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SortSearch from "../components/SortSearch";
 import Genres from "../components/Genres";
 import { RootObjectGenres, Genre } from "../interface/ResponseGenres";
-
+import {useTranslation} from "react-i18next";
 interface Props {}
 
 const Home = () => {
@@ -73,6 +73,8 @@ const Home = () => {
   const [isFocus, setIsFocus] = useState<boolean>(false);
   var with_genres: string = "";
   //const valueRef = useRef<HTMLInputElement>(null);
+
+  const {t} = useTranslation();
 
   useEffect(() => {
     setLoading(false);
@@ -227,13 +229,15 @@ const Home = () => {
     //setIsClickProps(true);
   };
 
+  const adContents : string = t('adultContents');
+
   return (
     <Layout>
       <Grid>
         <Grid item xs={12} margin={1}>
           <TextField
             id="standard-basic"
-            label="Search"
+            label={t('search')}
             variant="filled"
             color="primary"
             fullWidth
@@ -267,7 +271,7 @@ const Home = () => {
                 }
               }}
             >
-              Search
+              {t('search_button')}
             </Button>
           ) : null}
 
@@ -277,15 +281,16 @@ const Home = () => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>Sort</Typography>
+              <Typography>{t('sort')}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <FormControl fullWidth>
-                <InputLabel id="sorting">Sort Results By</InputLabel>
+                <InputLabel id="sorting">{t('sortBy')}</InputLabel>
                 <SortSearch
                   typeMovie="movie"
                   setSortAction={setSortAction}
                   setOnClicked={setIsClickProps}
+                  
                 ></SortSearch>
               </FormControl>
             </AccordionDetails>
@@ -296,7 +301,7 @@ const Home = () => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>Filters</Typography>
+              <Typography>{t('filters')}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid>
@@ -313,7 +318,7 @@ const Home = () => {
                         color="warning"
                       />
                     }
-                    label="Adult Contents"
+                    label={adContents}
                   />
                 </FormGroup>
               </Grid>
@@ -367,7 +372,7 @@ const Home = () => {
           sx={{ m: "1rem" }}
         >
           <FormControl>
-            <InputLabel id="demo-simple-select-label">{"Region"}</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t('region')}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -383,7 +388,7 @@ const Home = () => {
           </FormControl>
           &nbsp;
           <FormControl>
-            <InputLabel id="demo-simple-select-label">{"Lang"}</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t('lang')}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -423,7 +428,7 @@ const Home = () => {
             sx={{ m: "1rem" }}
           >
             <FormControl>
-              <InputLabel id="demo-simple-select-label">{"Region"}</InputLabel>
+              <InputLabel id="demo-simple-select-label">{t('region')}</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -439,7 +444,7 @@ const Home = () => {
             </FormControl>
             &nbsp;
             <FormControl>
-              <InputLabel id="demo-simple-select-label">{"Lang"}</InputLabel>
+              <InputLabel id="demo-simple-select-label">{t('lang')}</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"

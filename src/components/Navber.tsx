@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -17,6 +17,7 @@ import {
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
 import PageContext from "../context/PageContext";
+import {useTranslation} from "react-i18next";
 
 
 interface Prop {
@@ -25,6 +26,7 @@ interface Prop {
 
 const HideOnScroll = ({ children }: Prop) => {
   const trigger = useScrollTrigger();
+
   return (
     <Slide appear={false} direction={"down"} in={!trigger}>
       {children}
@@ -39,10 +41,26 @@ const Navber = () => {
   const navigate = useNavigate();
   const setSelectedLanguage = (event: SelectChangeEvent) => {
     setIsLanguageIn(event.target.value as string);
+    // if(event.target.value === "th"){
+    //   i18n.changeLanguage("th");
+    // }else if(event.target.value === "en"){
+      
+    // }
   };
   const setSelectedRegion = (event: SelectChangeEvent) => {
     setIsRegionIn(event.target.value as string);
   };
+
+  const {t, i18n} = useTranslation(); 
+  useEffect(()=>{
+    if(["en","cn","jp"].includes(isLanguageIn)){
+      i18n.changeLanguage("en");
+    }else if(isLanguageIn === "th"){
+      i18n.changeLanguage("th");
+    }
+  },[isLanguageIn]);
+  //console.log(t('hello'))
+ //i18n.changeLanguage("th");
 
   return (
     <HideOnScroll>
@@ -64,7 +82,7 @@ const Navber = () => {
                   setIsPageIn(1);
                 }}
               >
-                <Typography>Movies</Typography>
+                <Typography>{t('movies')}</Typography>
               </Button>
               <Button
                 variant="text"
@@ -74,7 +92,7 @@ const Navber = () => {
                   setIsPageIn(1);
                 }}
               >
-                <Typography>Tv Shows</Typography>
+                <Typography>{t('tvshows')}</Typography>
               </Button>
               <Button
                 variant="text"
@@ -83,7 +101,7 @@ const Navber = () => {
                   navigate("/favorites");
                 }}
               >
-                <Typography>Favorites</Typography>
+                <Typography>{t('favorite')}</Typography>
               </Button>
             </Grid>
 
@@ -93,7 +111,7 @@ const Navber = () => {
                   id="demo-simple-select-label"
                   style={{ color: "white" }}
                 >
-                  {"Region"}{" "}
+                  {t('region')}{" "}
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -116,7 +134,7 @@ const Navber = () => {
                   id="demo-simple-select-label"
                   style={{ color: "white" }}
                 >
-                  {"Lang"}
+                  {t('lang')}
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"

@@ -18,6 +18,7 @@ import {
   LazyLoadImage,
   LazyLoadComponent,
 } from "react-lazy-load-image-component";
+import {useTranslation} from "react-i18next";
 type Props = {};
 
 const Favorites = (props: Props) => {
@@ -26,6 +27,7 @@ const Favorites = (props: Props) => {
     useContext(MovieContext);
 
   const navigate = useNavigate();
+  const {t} = useTranslation();
 
   function handleOnClicked(
     id: number,
@@ -136,7 +138,7 @@ const Favorites = (props: Props) => {
                     variant={"contained"}
                     fullWidth
                   >
-                    View Detail
+                    {t('viewDetail')}
                   </Button>
                 </CardActions>
               </Card>
@@ -160,7 +162,7 @@ const Favorites = (props: Props) => {
 
   return (
     <Layout>
-      <Typography variant="h3">Your Favorites</Typography>
+      <Typography variant="h3">{t('yourFav')}</Typography>
       <br />
       <Grid
         container

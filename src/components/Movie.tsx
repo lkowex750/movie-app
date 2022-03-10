@@ -19,6 +19,7 @@ import {
   LazyLoadImage,
   LazyLoadComponent,
 } from "react-lazy-load-image-component";
+import {useTranslation} from "react-i18next";
 
 interface Props {
   results: Result;
@@ -29,7 +30,7 @@ const Movie = (props: Props) => {
     useContext(MovieContext);
 
   const navigate = useNavigate();
-
+  const {t} = useTranslation();
   const handleOnClicked = () => {
     var str = props.results.title;
     str = str.replace(/\s+/g, "-").toLowerCase();
@@ -168,7 +169,7 @@ const Movie = (props: Props) => {
               variant={"contained"}
               fullWidth
             >
-              View Detail
+              {t('viewDetail')}
             </Button>
           </CardActions>
         </Card>

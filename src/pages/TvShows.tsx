@@ -42,6 +42,7 @@ import { RootObjectGenres, Genre } from "../interface/ResponseGenres";
 import { Result, RootObject } from "../interface/ResponsePropsTv";
 import Genres from "../components/Genres";
 import TvSeries from "../components/TvSeries";
+import {useTranslation} from "react-i18next";
 
 type Props = {};
 
@@ -71,6 +72,7 @@ const TvShows = () => {
     search: false,
   });
   var with_genres: string = "";
+  const {t} = useTranslation();
   useEffect(() => {
     setLoading(false);
     async function fetchTvShowsPop() {
@@ -218,12 +220,14 @@ const TvShows = () => {
     setIsRegionIn(event.target.value as string);
   };
 
+  const adContents : string = t('adultContents');
+
   return (
     <Layout>
       <Grid>
         <Grid item xs={12} margin={1}>
           <TextField
-            label="Search"
+            label={t('search')}
             variant="filled"
             color="primary"
             fullWidth
@@ -258,7 +262,7 @@ const TvShows = () => {
                 }
               }}
             >
-              Search
+              {t('search_button')}
             </Button>
           ) : null}
           <Accordion>
@@ -267,15 +271,16 @@ const TvShows = () => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>Sort</Typography>
+              <Typography>{t('sort')}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <FormControl fullWidth>
-                <InputLabel id="sorting">Sort Results By</InputLabel>
+                <InputLabel id="sorting">{t('sortBy')}</InputLabel>
                 <SortSearch
                   typeMovie="tv"
                   setSortAction={setSortAction}
                   setOnClicked={setIsClickProps}
+                  
                 ></SortSearch>
               </FormControl>
             </AccordionDetails>
@@ -286,7 +291,7 @@ const TvShows = () => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>Filters</Typography>
+              <Typography>{t('filters')}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid>
@@ -303,7 +308,7 @@ const TvShows = () => {
                         color="warning"
                       />
                     }
-                    label="Adult Contents"
+                    label={adContents}
                   />
                 </FormGroup>
               </Grid>
@@ -356,7 +361,7 @@ const TvShows = () => {
           sx={{ m: "1rem" }}
         >
           <FormControl>
-            <InputLabel id="demo-simple-select-label">{"Region"}</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t('region')}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -372,7 +377,7 @@ const TvShows = () => {
           </FormControl>
           &nbsp;
           <FormControl>
-            <InputLabel id="demo-simple-select-label">{"Lang"}</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t('lang')}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -411,7 +416,7 @@ const TvShows = () => {
             sx={{ m: "1rem" }}
           >
             <FormControl>
-              <InputLabel id="demo-simple-select-label">{"Region"}</InputLabel>
+              <InputLabel id="demo-simple-select-label">{t('region')}</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -427,7 +432,7 @@ const TvShows = () => {
             </FormControl>
             &nbsp;
             <FormControl>
-              <InputLabel id="demo-simple-select-label">{"Lang"}</InputLabel>
+              <InputLabel id="demo-simple-select-label">{t('lang')}</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
