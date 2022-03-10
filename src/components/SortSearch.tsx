@@ -41,7 +41,7 @@ const SortSearch = (props: Props) => {
     { name: "วันที่เข้าฉายจากน้อยไปมาก ", value: "release_date.asc" },
     { name: "วันที่เข้าฉายจากมากไปน้อย", value: "release_date.desc" },
     { name: "รายได้จากน้อยไปมาก", value: "revenue.asc" },
-    { name: "รายรับจากมากไปน้อย", value: "revenue.desc" },
+    { name: "รายได้จากมากไปน้อย", value: "revenue.desc" },
     {
       name: "วันที่เผยแพร่หลักจากน้อยไปมาก ",
       value: "primary_release_date.asc",

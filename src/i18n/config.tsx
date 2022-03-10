@@ -22,7 +22,8 @@ export const resources = {
             "lang": "Lang",
             "region": "Region",
             "yourFav": "Your Favorites",
-            "search_button": "search"
+            "search_button": "search",
+            "fav_empty" : "You don't have Movies Favorites"
         }
     },
     th : {
@@ -31,9 +32,9 @@ export const resources = {
             "movies": "หนังโรง",
             "tvshows" : "ซีรี่ย์",
             "search": "ค้นหา",
-            "sort": "เรียงลำดับ",
+            "sort": "การเรียงลำดับ",
             "sortBy" : "จัดเรียงผลลัพธ์โดย",
-            "filters": "กรองประเภท",
+            "filters": "ตัวกรองประเภทหนัง",
             "adultContents" : "เนื้อหาสำหรับผู้ใหญ่",
             "viewDetail" : "ดูรายละเอียด",
             "fav_button": "ชื่นชอบ",
@@ -44,7 +45,8 @@ export const resources = {
             "lang": "ภาษา",
             "region": "ภูมิภาค",
             "yourFav": "รายการโปรดของคุณ",
-            "search_button": "เริ่มค้นหา"
+            "search_button": "เริ่มค้นหา",
+            "fav_empty" : "คุณไม่มีรายการภาพยนตร์โปรด"
         }
     }
 
