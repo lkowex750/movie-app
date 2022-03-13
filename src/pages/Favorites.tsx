@@ -42,7 +42,7 @@ const Favorites = (props: Props) => {
     str = str.replaceAll(":", "");
     str = str.replaceAll("/", "");
     str = str.replaceAll("\\", "");
-    var path = (typeMovie === "movie" ? "/movie/" : "/tv/") + str;
+    var path = (typeMovie === "movie" ? "/movie/" : "/tv/") + id + "-" + str;
     setId(id);
     setTitle(title);
     setBackdrop_path(backdrop_path);

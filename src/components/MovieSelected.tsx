@@ -32,15 +32,23 @@ import {
 import LayoutForSelectPage from "./LayoutForSelectPage";
 import FavoiritesContext from "../context/FavoritesContext";
 import StarIcon from "@mui/icons-material/Star";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { RootObjectTv } from "../interface/ResponseDetailTv";
 import { Credits } from "../interface/ResponseCastProps";
 import { Reviews } from "../interface/ResponseReviews";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 function MovieSelected(value: RootObject) {
-  const { id, title, backdrop_path, release_date, typeMovie } =
-    useContext(MovieContext);
+  const {
+    id,
+    title,
+    backdrop_path,
+    release_date,
+    typeMovie,
+    setId,
+    setBackdrop_path,
+    setTitle,
+  } = useContext(MovieContext);
   const { isRegionIn } = useContext(RegionContext);
   const { isLanguageIn } = useContext(LanguageContext);
   const [poster, setPoster] = useState<string>("");
@@ -50,13 +58,14 @@ function MovieSelected(value: RootObject) {
   const [statusButton, setStatusButton] = useState<boolean>(false);
   const [cast, setCast] = useState<Credits["cast"]>([]);
   const [reviews, setReviews] = useState<Reviews["results"]>([]);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   let path = "https://image.tmdb.org/t/p/original" + backdrop_path;
   let pathPost = "https://image.tmdb.org/t/p/original";
 
   let setRelease_date = "";
 
   let params = useParams();
+  const navigate = useNavigate();
   if (backdrop_path == null) {
     path =
       "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
@@ -70,38 +79,52 @@ function MovieSelected(value: RootObject) {
   }
 
   useEffect(() => {
+    var splits: Array<string> | undefined = params.id?.split("-");
+
+    if (splits !== undefined) {
+      setId(Number(splits[0]));
+    }
     async function fetchGetMovieDetail() {
       if (params.type === "movie") {
-        const data = await getMovieDetail(id, isLanguageIn, isRegionIn);
-        const credits = await getCredits(id, isLanguageIn, "movie");
-        const reviewsData = await getMovieReviews(id, isLanguageIn, "movie");
+        try {
+          const data = await getMovieDetail(id, isLanguageIn, isRegionIn);
+          const credits = await getCredits(id, isLanguageIn, "movie");
+          const reviewsData = await getMovieReviews(id, isLanguageIn, "movie");
 
-        setCast(credits.cast);
-        setPoster(pathPost + data.poster_path);
-        setMovies(data);
-        setReviews(reviewsData.results);
+          setCast(credits.cast);
+          setPoster(pathPost + data.poster_path);
+          setMovies(data);
+          setReviews(reviewsData.results);
 
-        if (data.poster_path == null) {
-          setPoster(path);
-          setTvs(data);
+          if (data.poster_path == null) {
+            setPoster(path);
+            setTvs(data);
+          }
+        } catch (error) {
+          navigate("/*");
         }
       } else {
-        const data = await getMovieDetailTv(id, isLanguageIn);
-        const credits = await getCredits(id, isLanguageIn, "tv");
-        const reviewsData = await getMovieReviews(id, isLanguageIn, "tv");
-        setReviews(reviewsData.results);
-        setCast(credits.cast);
-        setPoster(pathPost + data.poster_path);
-        setTvs(data);
-        if (data.poster_path == null) {
-          setPoster(path);
+        try {
+          const data = await getMovieDetailTv(id, isLanguageIn);
+
+          const credits = await getCredits(id, isLanguageIn, "tv");
+          const reviewsData = await getMovieReviews(id, isLanguageIn, "tv");
+          setReviews(reviewsData.results);
+          setCast(credits.cast);
+          setPoster(pathPost + data.poster_path);
           setTvs(data);
+          if (data.poster_path == null) {
+            setPoster(path);
+            setTvs(data);
+          }
+        } catch (error) {
+          navigate("/*");
         }
       }
     }
 
     fetchGetMovieDetail();
-  }, [isLanguageIn]);
+  }, [isLanguageIn, id]);
 
   useEffect(() => {
     isFavoiritesIn.forEach((e) => {
@@ -307,7 +330,7 @@ function MovieSelected(value: RootObject) {
                   onClick={handleUnFav}
                 >
                   <StarIcon />
-                  <span style={{ color: "white" }}>{t('unfav_button')}</span>
+                  <span style={{ color: "white" }}>{t("unfav_button")}</span>
                 </Button>
               ) : (
                 <Button
@@ -327,7 +350,7 @@ function MovieSelected(value: RootObject) {
                   onClick={handleSetFavoriteMovie}
                 >
                   <StarIcon />
-                  <span style={{ color: "white" }}>{t('fav_button')}</span>
+                  <span style={{ color: "white" }}>{t("fav_button")}</span>
                 </Button>
               )}
             </Box>
@@ -340,7 +363,7 @@ function MovieSelected(value: RootObject) {
           marginTop={2}
           marginBottom={2}
         >
-          {t('cast')}
+          {t("cast")}
         </Typography>
 
         <Grid
@@ -390,14 +413,18 @@ function MovieSelected(value: RootObject) {
           justifyContent="center"
           alignItems="center"
         >
-          <Link underline="none" style={{ cursor: "pointer" }}>
-            <Typography fontWeight={600}>{t('fullCast')}</Typography>
+          <Link
+            underline="none"
+            style={{ cursor: "pointer" }}
+            href={"/fullcast/" + params.type + "/" + id}
+          >
+            <Typography fontWeight={600}>{t("fullCast")}</Typography>
           </Link>
         </Grid>
         {reviews.length > 0 ? (
           <Grid marginTop={3}>
             <Typography variant="h4" fontWeight={600}>
-              {t('review')}
+              {t("review")}
             </Typography>
             <br />
             {reviewElements}

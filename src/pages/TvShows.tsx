@@ -42,7 +42,7 @@ import { RootObjectGenres, Genre } from "../interface/ResponseGenres";
 import { Result, RootObject } from "../interface/ResponsePropsTv";
 import Genres from "../components/Genres";
 import TvSeries from "../components/TvSeries";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 type Props = {};
 
@@ -72,7 +72,7 @@ const TvShows = () => {
     search: false,
   });
   var with_genres: string = "";
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   useEffect(() => {
     setLoading(false);
     async function fetchTvShowsPop() {
@@ -220,14 +220,14 @@ const TvShows = () => {
     setIsRegionIn(event.target.value as string);
   };
 
-  const adContents : string = t('adultContents');
+  const adContents: string = t("adultContents");
 
   return (
     <Layout>
       <Grid>
         <Grid item xs={12} margin={1}>
           <TextField
-            label={t('search')}
+            label={t("search")}
             variant="filled"
             color="primary"
             fullWidth
@@ -262,7 +262,7 @@ const TvShows = () => {
                 }
               }}
             >
-              {t('search_button')}
+              {t("search_button")}
             </Button>
           ) : null}
           <Accordion>
@@ -271,16 +271,15 @@ const TvShows = () => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>{t('sort')}</Typography>
+              <Typography>{t("sort")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <FormControl fullWidth>
-                <InputLabel id="sorting">{t('sortBy')}</InputLabel>
+                <InputLabel id="sorting">{t("sortBy")}</InputLabel>
                 <SortSearch
                   typeMovie="tv"
                   setSortAction={setSortAction}
                   setOnClicked={setIsClickProps}
-                  
                 ></SortSearch>
               </FormControl>
             </AccordionDetails>
@@ -291,7 +290,7 @@ const TvShows = () => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>{t('filters')}</Typography>
+              <Typography>{t("filters")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid>
@@ -361,7 +360,7 @@ const TvShows = () => {
           sx={{ m: "1rem" }}
         >
           <FormControl>
-            <InputLabel id="demo-simple-select-label">{t('region')}</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t("region")}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -377,7 +376,7 @@ const TvShows = () => {
           </FormControl>
           &nbsp;
           <FormControl>
-            <InputLabel id="demo-simple-select-label">{t('lang')}</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t("lang")}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -416,7 +415,9 @@ const TvShows = () => {
             sx={{ m: "1rem" }}
           >
             <FormControl>
-              <InputLabel id="demo-simple-select-label">{t('region')}</InputLabel>
+              <InputLabel id="demo-simple-select-label">
+                {t("region")}
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -432,7 +433,7 @@ const TvShows = () => {
             </FormControl>
             &nbsp;
             <FormControl>
-              <InputLabel id="demo-simple-select-label">{t('lang')}</InputLabel>
+              <InputLabel id="demo-simple-select-label">{t("lang")}</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"

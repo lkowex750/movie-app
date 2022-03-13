@@ -1,4 +1,4 @@
-import React ,{useContext} from "react";
+import React, { useContext } from "react";
 import { Result, RootObject } from "../interface/ResponsePropsTv";
 import {
   Grid,
@@ -18,35 +18,51 @@ import {
 } from "react-lazy-load-image-component";
 import { useNavigate } from "react-router-dom";
 import MovieContext from "../context/MovieSelectedContext";
+import FavoiritesContext from "../context/FavoritesContext";
+import StarsIcon from "@mui/icons-material/Stars";
 
 interface Props {
   results: Result;
 }
 
 const TvSeries = (props: Props) => {
-    const { setId, setBackdrop_path, setTitle, setRelease_date ,setTypeMovie} =
+  const { setId, setBackdrop_path, setTitle, setRelease_date, setTypeMovie } =
     useContext(MovieContext);
+
+  const { isFavoiritesIn } = useContext(FavoiritesContext);
   let path = "https://image.tmdb.org/t/p/original" + props.results.poster_path;
-  
+
   if (props.results.poster_path === null) {
     path =
       "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
   }
   const navigate = useNavigate();
 
-  const handleOnClicked = () =>{
+  const handleOnClicked = () => {
     var str = props.results.name;
     str = str.replace(/\s+/g, "-").toLowerCase();
     str = str.replaceAll(":", "");
     str = str.replaceAll("/", "");
     str = str.replaceAll("\\", "");
-    var path = "/tv/" + str;
+    var path = "/tv/" + props.results.id + "-" + str;
     setId(props.results.id);
     setTitle(props.results.name);
     setBackdrop_path(props.results.backdrop_path);
     setRelease_date(props.results.first_air_date);
     setTypeMovie("tv");
     navigate(path);
+  };
+
+  function favE() {
+    if (isFavoiritesIn.filter((e) => e.id === props.results.id).length > 0) {
+      //console.log(isFavoiritesIn.filter((e) => e.id === props.results.id))
+      //isFavoiritesIn.f
+      return (
+        <StarsIcon
+          style={{ color: "#f3ce13", borderColor: "black" }}
+        ></StarsIcon>
+      );
+    }
   }
   return (
     <Grid item xs sx={{ m: "0.5rem" }}>
@@ -75,6 +91,7 @@ const TvSeries = (props: Props) => {
                   gutterBottom
                   onClick={handleOnClicked}
                 >
+                  {favE()}
                   {props.results.name}{" "}
                 </Typography>
               </div>
@@ -152,7 +169,6 @@ const TvSeries = (props: Props) => {
                 </CircularProgressbarWithChildren>
               </div>
             </Box>
-
           </CardContent>
           <CardActions>
             <Button

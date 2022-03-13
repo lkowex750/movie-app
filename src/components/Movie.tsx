@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import { Result } from "../interface/ResponseProps";
 import "./style/Movie.css";
 import MovieContext from "../context/MovieSelectedContext";
@@ -19,25 +19,27 @@ import {
   LazyLoadImage,
   LazyLoadComponent,
 } from "react-lazy-load-image-component";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
+import FavoiritesContext from "../context/FavoritesContext";
+import StarsIcon from "@mui/icons-material/Stars";
 
 interface Props {
   results: Result;
 }
 
 const Movie = (props: Props) => {
-  const { setId, setBackdrop_path, setTitle, setRelease_date ,setTypeMovie} =
+  const { setId, setBackdrop_path, setTitle, setRelease_date, setTypeMovie } =
     useContext(MovieContext);
-
+  const { isFavoiritesIn } = useContext(FavoiritesContext);
   const navigate = useNavigate();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const handleOnClicked = () => {
     var str = props.results.title;
     str = str.replace(/\s+/g, "-").toLowerCase();
     str = str.replaceAll(":", "");
     str = str.replaceAll("/", "");
     str = str.replaceAll("\\", "");
-    var path = "/movie/" + str;
+    var path = "/movie/" + props.results.id + "-" + str;
     setId(props.results.id);
     setTitle(props.results.title);
     setBackdrop_path(props.results.backdrop_path);
@@ -55,6 +57,18 @@ const Movie = (props: Props) => {
       "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
   }
 
+  function favE() {
+    if (isFavoiritesIn.filter((e) => e.id === props.results.id).length > 0) {
+      //console.log(isFavoiritesIn.filter((e) => e.id === props.results.id))
+      //isFavoiritesIn.f
+      return (
+        <StarsIcon
+          style={{ color: "#f3ce13", borderColor: "black" }}
+        ></StarsIcon>
+      );
+    }
+  }
+
   return (
     <Grid item xs sx={{ m: "0.5rem" }}>
       <LazyLoadComponent
@@ -65,7 +79,7 @@ const Movie = (props: Props) => {
             title={
               <div
                 style={{
-                  overflow: "hidden",             
+                  overflow: "hidden",
                   width: "11rem",
                 }}
               >
@@ -82,7 +96,7 @@ const Movie = (props: Props) => {
                   gutterBottom
                   onClick={handleOnClicked}
                 >
-                  {props.results.title}
+                  {favE()} {props.results.title}
                 </Typography>
               </div>
             }
@@ -169,7 +183,7 @@ const Movie = (props: Props) => {
               variant={"contained"}
               fullWidth
             >
-              {t('viewDetail')}
+              {t("viewDetail")}
             </Button>
           </CardActions>
         </Card>
