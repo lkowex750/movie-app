@@ -6,10 +6,10 @@ import colors from "./color.json";
 const Movie_Style = makeStyles((theme: Theme) =>
   createStyles({
     button_detail: {
-      background: colors.fede_purple,
+      background: colors.fade_purple,
     },
     button_fav: {
-      background: colors.fede_purple,
+      background: colors.fade_purple,
       padding: "10px 20px",
       border: "none",
       borderRadius: "5px",
