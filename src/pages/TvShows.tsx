@@ -43,6 +43,7 @@ import { Result, RootObject } from "../interface/ResponsePropsTv";
 import Genres from "../components/Genres";
 import TvSeries from "../components/TvSeries";
 import { useTranslation } from "react-i18next";
+import Home_Style from "../components/style/Home_Style";
 
 type Props = {};
 
@@ -73,6 +74,7 @@ const TvShows = () => {
   });
   var with_genres: string = "";
   const { t } = useTranslation();
+  const classes = Home_Style();
   useEffect(() => {
     setLoading(false);
     async function fetchTvShowsPop() {
@@ -247,9 +249,8 @@ const TvShows = () => {
             <Button
               variant="contained"
               fullWidth
-              color="success"
               size="large"
-              style={{ cursor: "pointer" }}
+              className={classes.button_search}
               onClick={() => {
                 setIsClickProps(false);
                 setIsFilterClicked(false);

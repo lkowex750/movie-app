@@ -6,9 +6,10 @@ import {
   FormLabel,
   FormGroup,
   Box,
-  Grid,
+  Grid,ThemeProvider
 } from "@mui/material";
 import { Genre } from "../interface/ResponseGenres";
+import Filters_Theme from "../components/style/Filters_Theme"
 type Props = {
   props: Genre;
   setOnClicked: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,16 +35,19 @@ const Genres = (value: Props) => {
   };
 
   return (
-    <Grid item xs={6} md={4}>
+    <ThemeProvider theme={Filters_Theme}>
+      <Grid item xs={6} md={4}>
       <FormControl component="fieldset" variant="standard">
         <FormGroup>
           <FormControlLabel
-            control={<Checkbox checked={check} onClick={handleOnClicked} />}
+            control={<Checkbox checked={check} onClick={handleOnClicked} color="primary"/>}
             label={value.props.name}
           />
         </FormGroup>
       </FormControl>
     </Grid>
+    </ThemeProvider>
+    
   );
 };
 

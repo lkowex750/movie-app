@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import MovieContext from "../context/MovieSelectedContext";
 import FavoiritesContext from "../context/FavoritesContext";
 import StarsIcon from "@mui/icons-material/Stars";
+import Movie_Style from "../components/style/Movie_Style";
 
 interface Props {
   results: Result;
@@ -37,6 +38,7 @@ const TvSeries = (props: Props) => {
       "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
   }
   const navigate = useNavigate();
+  const classes = Movie_Style();
 
   const handleOnClicked = () => {
     var str = props.results.name;
@@ -126,7 +128,7 @@ const TvSeries = (props: Props) => {
                     // Customize the path, i.e. the "completed progress"
                     path: {
                       // Path color
-                      stroke: `rgba(62, 152, 199, ${props.results.vote_average})`,
+                      stroke: `rgba(0, 207, 81, ${props.results.vote_average})`,
                       // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
                       strokeLinecap: "butt",
                       // Customize transition animation
@@ -176,6 +178,7 @@ const TvSeries = (props: Props) => {
               onClick={handleOnClicked}
               variant={"contained"}
               fullWidth
+              className={classes.button_detail}
             >
               View Detail
             </Button>

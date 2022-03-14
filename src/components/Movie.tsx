@@ -22,6 +22,7 @@ import {
 import { useTranslation } from "react-i18next";
 import FavoiritesContext from "../context/FavoritesContext";
 import StarsIcon from "@mui/icons-material/Stars";
+import Movie_Style from "../components/style/Movie_Style";
 
 interface Props {
   results: Result;
@@ -47,6 +48,8 @@ const Movie = (props: Props) => {
     setTypeMovie("movie");
     navigate(path);
   };
+
+  const classes = Movie_Style();
 
   //https://image.tmdb.org/t/p/w500
   //https://image.tmdb.org/t/p/original
@@ -132,7 +135,7 @@ const Movie = (props: Props) => {
                     // Customize the path, i.e. the "completed progress"
                     path: {
                       // Path color
-                      stroke: `rgba(62, 152, 199, ${props.results.vote_average})`,
+                      stroke: `rgba(227, 59, 64, ${props.results.vote_average})`,
                       // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
                       strokeLinecap: "butt",
                       // Customize transition animation
@@ -182,6 +185,7 @@ const Movie = (props: Props) => {
               onClick={handleOnClicked}
               variant={"contained"}
               fullWidth
+              className={classes.button_detail}
             >
               {t("viewDetail")}
             </Button>

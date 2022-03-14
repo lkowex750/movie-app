@@ -9,7 +9,7 @@ function Footer({}: Props) {
     <Box
       px={{ xs: 3, sm: 10 }}
       py={{ xs: 5, sm: 10 }}
-      style={{ backgroundColor: "#A8A8A8" }}
+      style={{ backgroundColor: "#757575" }}
       color="white"
     >
       <Container maxWidth="xl">

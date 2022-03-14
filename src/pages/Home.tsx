@@ -37,13 +37,15 @@ import {
   Switch,
   FormGroup,
   FormControlLabel,
+  createTheme,
 } from "@mui/material";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SortSearch from "../components/SortSearch";
 import Genres from "../components/Genres";
 import { RootObjectGenres, Genre } from "../interface/ResponseGenres";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
+import Home_Style from "../components/style/Home_Style";
 interface Props {}
 
 const Home = () => {
@@ -74,7 +76,9 @@ const Home = () => {
   var with_genres: string = "";
   //const valueRef = useRef<HTMLInputElement>(null);
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+
+  const classes = Home_Style();
 
   useEffect(() => {
     setLoading(false);
@@ -229,15 +233,16 @@ const Home = () => {
     //setIsClickProps(true);
   };
 
-  const adContents : string = t('adultContents');
+  const adContents: string = t("adultContents");
 
   return (
     <Layout>
       <Grid>
         <Grid item xs={12} margin={1}>
           <TextField
+            // sx={{input : {color : "black"}}}
             id="standard-basic"
-            label={t('search')}
+            label={t("search")}
             variant="filled"
             color="primary"
             fullWidth
@@ -256,9 +261,9 @@ const Home = () => {
             <Button
               variant="contained"
               fullWidth
-              color="success"
+              //color="success"
               size="large"
-              style={{ cursor: "pointer" }}
+              className={classes.button_search}
               onClick={() => {
                 setIsClickProps(false);
                 setIsFilterClicked(false);
@@ -271,7 +276,7 @@ const Home = () => {
                 }
               }}
             >
-              {t('search_button')}
+              {t("search_button")}
             </Button>
           ) : null}
 
@@ -281,16 +286,15 @@ const Home = () => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>{t('sort')}</Typography>
+              <Typography>{t("sort")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <FormControl fullWidth>
-                <InputLabel id="sorting">{t('sortBy')}</InputLabel>
+                <InputLabel id="sorting">{t("sortBy")}</InputLabel>
                 <SortSearch
                   typeMovie="movie"
                   setSortAction={setSortAction}
                   setOnClicked={setIsClickProps}
-                  
                 ></SortSearch>
               </FormControl>
             </AccordionDetails>
@@ -301,7 +305,7 @@ const Home = () => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography>{t('filters')}</Typography>
+              <Typography>{t("filters")}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid>
@@ -372,7 +376,7 @@ const Home = () => {
           sx={{ m: "1rem" }}
         >
           <FormControl>
-            <InputLabel id="demo-simple-select-label">{t('region')}</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t("region")}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -388,7 +392,7 @@ const Home = () => {
           </FormControl>
           &nbsp;
           <FormControl>
-            <InputLabel id="demo-simple-select-label">{t('lang')}</InputLabel>
+            <InputLabel id="demo-simple-select-label">{t("lang")}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -428,7 +432,9 @@ const Home = () => {
             sx={{ m: "1rem" }}
           >
             <FormControl>
-              <InputLabel id="demo-simple-select-label">{t('region')}</InputLabel>
+              <InputLabel id="demo-simple-select-label">
+                {t("region")}
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -444,7 +450,7 @@ const Home = () => {
             </FormControl>
             &nbsp;
             <FormControl>
-              <InputLabel id="demo-simple-select-label">{t('lang')}</InputLabel>
+              <InputLabel id="demo-simple-select-label">{t("lang")}</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"

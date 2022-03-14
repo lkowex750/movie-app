@@ -37,6 +37,7 @@ import { RootObjectTv } from "../interface/ResponseDetailTv";
 import { Credits } from "../interface/ResponseCastProps";
 import { Reviews } from "../interface/ResponseReviews";
 import { useTranslation } from "react-i18next";
+import Movie_Style from "./style/Movie_Style";
 
 function MovieSelected(value: RootObject) {
   const {
@@ -61,7 +62,7 @@ function MovieSelected(value: RootObject) {
   const { t } = useTranslation();
   let path = "https://image.tmdb.org/t/p/original" + backdrop_path;
   let pathPost = "https://image.tmdb.org/t/p/original";
-
+  const classes = Movie_Style();
   let setRelease_date = "";
 
   let params = useParams();
@@ -315,18 +316,7 @@ function MovieSelected(value: RootObject) {
               {statusButton ? (
                 <Button
                   variant="contained"
-                  style={{
-                    padding: "10px 20px",
-                    border: "none",
-                    borderRadius: "5px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "18px",
-                    fontWeight: "500",
-                    marginRight: "10px",
-                    cursor: "pointer",
-                  }}
+                  className={classes.button_fav}
                   onClick={handleUnFav}
                 >
                   <StarIcon />
@@ -335,18 +325,7 @@ function MovieSelected(value: RootObject) {
               ) : (
                 <Button
                   variant="contained"
-                  style={{
-                    padding: "10px 20px",
-                    border: "none",
-                    borderRadius: "5px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "18px",
-                    fontWeight: "500",
-                    marginRight: "10px",
-                    cursor: "pointer",
-                  }}
+                  className={classes.button_fav}
                   onClick={handleSetFavoriteMovie}
                 >
                   <StarIcon />
