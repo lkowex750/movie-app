@@ -13,7 +13,6 @@ const api_path_discover_tv = process.env.REACT_APP_API_DISCOVER_TV + "";
 const api_path_search_tv = process.env.REACT_APP_API_SEARCH_TV + "";
 const api_key = process.env.REACT_APP_API_KEY;
 
-
 export const getPopularMovie = async (
   page: number,
   language: string,
@@ -52,7 +51,8 @@ export const getMoviesDiscover = async (
   region: string,
   sort_by: string,
   with_genres: string,
-  include_adult: boolean
+  include_adult: boolean,
+  dateFilter: Array<string>
 ) => {
   if (sort_by === "") {
     sort_by = "popularity.desc";
@@ -68,6 +68,8 @@ export const getMoviesDiscover = async (
         sort_by: sort_by,
         with_genres: with_genres,
         include_adult: include_adult,
+        "primary_release_date.gte": dateFilter[0],
+        "primary_release_date.lte": dateFilter[1],
       },
     })
     .then((res) => res.data);
@@ -148,7 +150,8 @@ export const getTvDiscover = async (
   language: string,
   region: string,
   sort_by: string,
-  with_genres: string
+  with_genres: string,
+  dateFilter: Array<string>
 ) => {
   const getData = await axios
     .get(api_path_discover_tv, {
@@ -158,6 +161,8 @@ export const getTvDiscover = async (
         sort_by: sort_by,
         page: page,
         with_genres: with_genres,
+        "first_air_date.gte": dateFilter[0],
+        "first_air_date.lte": dateFilter[1],
       },
     })
     .then((res) => res.data);

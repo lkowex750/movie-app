@@ -12,6 +12,8 @@ import { Container } from "@mui/material";
 import TvShows from "../pages/TvShows";
 import FullCast from "../pages/FullCast";
 import PageNotFound from "../pages/PageNotFound";
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 function App() {
   const { id, backdrop_path, title, release_date, typeMovie } =
@@ -19,6 +21,7 @@ function App() {
   const pathMovieDetail = "/movie/" + id;
   return (
     <Container maxWidth="xl" className="bg-container">
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
       <ContextProvider>
         <BrowserRouter>
           <Routes>
@@ -47,6 +50,8 @@ function App() {
           </Routes>
         </BrowserRouter>
       </ContextProvider>
+      </LocalizationProvider>
+      
     </Container>
   );
 }

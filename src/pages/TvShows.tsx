@@ -44,7 +44,7 @@ import Genres from "../components/Genres";
 import TvSeries from "../components/TvSeries";
 import { useTranslation } from "react-i18next";
 import Home_Style from "../components/style/Home_Style";
-
+import DateRangePicker, { DateRange } from "@mui/lab/DateRangePicker";
 type Props = {};
 
 const TvShows = () => {
@@ -72,6 +72,8 @@ const TvShows = () => {
     discover: false,
     search: false,
   });
+  const [dateValue, setDateValue] = useState<DateRange<Date>>([null, null]);
+  const [dateFilter, setDateFilter] = useState<Array<string>>([]);
   var with_genres: string = "";
   const { t } = useTranslation();
   const classes = Home_Style();
@@ -96,7 +98,8 @@ const TvShows = () => {
         isLanguageIn,
         isRegionIn,
         sortAction,
-        with_genres
+        with_genres,
+        dateFilter
       );
       setTvSeries(data.results);
       setPage(data.page);
@@ -189,6 +192,22 @@ const TvShows = () => {
 
     fetchGenresList();
   }, [isLanguageIn]);
+
+  useEffect(() => {
+    if (dateValue[0] !== null) {
+      if (dateValue[1] !== null) {
+        setDateFilter([
+          dateValue[0]?.toISOString(),
+          dateValue[1]?.toISOString(),
+        ]);
+        setIsFilterClicked(true);
+
+        //console.log(dateValue[1]?.toISOString())
+      }
+      console.log(dateFilter);
+      //console.log(dateValue[0]?.toISOString())
+    }
+  }, [dateValue]);
 
   const handleOnChangeTextSearch = (event: FocusEvent<HTMLInputElement>) => {
     //console.log(event.target.value)
@@ -332,6 +351,28 @@ const TvShows = () => {
                       );
                     })
                   : null}
+              </Grid>
+              <Grid container direction="row" marginTop={5}>
+                <Grid item>
+                  <Typography marginBottom={2}>Date Filters</Typography>
+                  <DateRangePicker
+                    startText="Start"
+                    endText="End"
+                    value={dateValue}
+                    onChange={(newValue) => {
+                      setDateValue(newValue);
+
+                      //console.log(newValue[0])
+                    }}
+                    renderInput={(startProps, endProps) => (
+                      <React.Fragment>
+                        <TextField {...startProps} />
+                        <Box sx={{ mx: 2 }}> to </Box>
+                        <TextField {...endProps} />
+                      </React.Fragment>
+                    )}
+                  />
+                </Grid>
               </Grid>
             </AccordionDetails>
           </Accordion>
