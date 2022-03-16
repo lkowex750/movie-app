@@ -45,6 +45,8 @@ import TvSeries from "../components/TvSeries";
 import { useTranslation } from "react-i18next";
 import Home_Style from "../components/style/Home_Style";
 import DateRangePicker, { DateRange } from "@mui/lab/DateRangePicker";
+import DateFilters from "../components/DateFilters";
+import Watch_providers from "../components/Watch_providers";
 type Props = {};
 
 const TvShows = () => {
@@ -354,24 +356,16 @@ const TvShows = () => {
               </Grid>
               <Grid container direction="row" marginTop={5}>
                 <Grid item>
-                  <Typography marginBottom={2}>Date Filters</Typography>
-                  <DateRangePicker
-                    startText="Start"
-                    endText="End"
-                    value={dateValue}
-                    onChange={(newValue) => {
-                      setDateValue(newValue);
-
-                      //console.log(newValue[0])
-                    }}
-                    renderInput={(startProps, endProps) => (
-                      <React.Fragment>
-                        <TextField {...startProps} />
-                        <Box sx={{ mx: 2 }}> to </Box>
-                        <TextField {...endProps} />
-                      </React.Fragment>
-                    )}
-                  />
+                  <Typography marginBottom={2}>{t("date_filters")}</Typography>
+                  <DateFilters setDateValue={setDateValue}></DateFilters>
+                </Grid>
+                
+                
+              </Grid>
+              <Grid container marginTop={5}>
+              <Grid item>
+                <Typography marginBottom={2}>Where to Watch</Typography>
+                    {/* <Watch_providers typeMovie="tv"></Watch_providers> */}
                 </Grid>
               </Grid>
             </AccordionDetails>

@@ -13,6 +13,7 @@ import {
   getMoviesDiscover,
   getListGenres,
   getSearchMovie,
+  getMovieProviders,
 } from "../Api/api";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
@@ -48,6 +49,9 @@ import { useTranslation } from "react-i18next";
 import Home_Style from "../components/style/Home_Style";
 import DateRangePicker, { DateRange } from "@mui/lab/DateRangePicker";
 import DatePicker from "@mui/lab/DatePicker";
+import DateFilters from "../components/DateFilters";
+import Watch_providers from "../components/Watch_providers";
+import { WatchProviders } from "../interface/WatchProvidersInterface";
 
 interface Props {}
 
@@ -78,6 +82,9 @@ const Home = () => {
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const [dateValue, setDateValue] = useState<DateRange<Date>>([null, null]);
   const [dateFilter, setDateFilter] = useState<Array<string>>([]);
+  const [watchProviders, setWatchProviders] = useState<
+    WatchProviders["results"]
+  >([]);
   var with_genres: string = "";
   //const valueRef = useRef<HTMLInputElement>(null);
 
@@ -205,6 +212,15 @@ const Home = () => {
 
     fetchListGenres();
   }, [isLanguageIn]);
+
+  useEffect(() => {
+    async function fetchMovieProviders() {
+      const data = await getMovieProviders("en");
+      console.log(data.results);
+      setWatchProviders(data.results);
+    }
+    fetchMovieProviders();
+  }, []);
 
   useEffect(() => {
     if (dateValue[0] !== null) {
@@ -369,26 +385,22 @@ const Home = () => {
                     })
                   : null}
               </Grid>
-              <Grid container direction="row" marginTop={5}>
+              <Grid container direction="row" marginTop={4}>
                 <Grid item>
-                  <Typography marginBottom={2}>Date Filters</Typography>
-                  <DateRangePicker
-                    startText="Start"
-                    endText="End"
-                    value={dateValue}
-                    onChange={(newValue) => {
-                      setDateValue(newValue);
+                  <Typography marginBottom={2}>{t("date_filters")}</Typography>
+                  <DateFilters setDateValue={setDateValue}></DateFilters>
+                </Grid>
+              </Grid>
+              <Grid container direction="row" marginTop={4}>
+                <Grid item>
+                  <Typography marginBottom={2}>Where to Watch</Typography>
+                  <Grid container direction="row">
+                    {watchProviders.map((wprovi,index) => {
+                      return (<Watch_providers typeMovie="movie" key={index} watch_provider={wprovi}></Watch_providers>);
+                    })}
+                  </Grid>
 
-                      //console.log(newValue[0])
-                    }}
-                    renderInput={(startProps, endProps) => (
-                      <React.Fragment>
-                        <TextField {...startProps} />
-                        <Box sx={{ mx: 2 }}> to </Box>
-                        <TextField {...endProps} />
-                      </React.Fragment>
-                    )}
-                  />
+                  {/* <Watch_providers typeMovie="movie"></Watch_providers> */}
                 </Grid>
               </Grid>
             </AccordionDetails>

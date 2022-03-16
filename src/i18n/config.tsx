@@ -32,6 +32,9 @@ export const resources = {
       no_button: "No",
       dialog_clear_title: "You want to clear favorites movie?",
       dialog_clear_content: "You want to clear favorites movie?.....",
+      date_filters : "Date Filters",
+      date_from : "from",
+      date_to : "to"
     },
   },
   th: {
@@ -63,6 +66,9 @@ export const resources = {
       no_button: "ไม่",
       dialog_clear_title: "คุณต้องการเคลียร์รายการโปรดหรือไม่?",
       dialog_clear_content: "คุณต้องการเคลียร์รายการโปรดหรือไม่?.....",
+      date_filters : "ตัวกรองวันที่",
+      date_from : "จากวันที่",
+      date_to : "ถึงวันที่"
     },
   },
 } as const;

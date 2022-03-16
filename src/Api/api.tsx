@@ -11,6 +11,10 @@ const api_path_pop_tv = process.env.REACT_APP_API_PATH_POPULAR_TV + "";
 const api_path_tv_detail = process.env.REACT_APP_API_PATH_DETAIL_TV + "";
 const api_path_discover_tv = process.env.REACT_APP_API_DISCOVER_TV + "";
 const api_path_search_tv = process.env.REACT_APP_API_SEARCH_TV + "";
+const api_path_movie_watchproviders =
+  process.env.REACT_APP_API_WATCH_PROVIDERS_MOVIE + "";
+const api_path_tv_watchproviders =
+  process.env.REACT_APP_API_WATCH_PROVIDERS_TV + "";
 const api_key = process.env.REACT_APP_API_KEY;
 
 export const getPopularMovie = async (
@@ -237,6 +241,22 @@ export const getMovieReviews = async (
       }
     )
     .then((res) => res.data);
+
+  return getData;
+};
+
+export const getMovieProviders = async (language: string) => {
+  const getData = await axios.get(api_path_movie_watchproviders, {
+    params: { api_key: api_key, language: language ,watch_region: "TH"},
+  }).then((res) => res.data);
+
+  return getData;
+};
+
+export const getTvProviders = async (language : string) => {
+  const getData = await axios.get(api_path_tv_watchproviders, {
+    params: { api_key: api_key, language: language ,watch_region: "TH"},
+  }).then((res) => res.data);
 
   return getData;
 };
