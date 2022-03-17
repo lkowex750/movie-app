@@ -2,7 +2,7 @@ import React from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import { Container } from "@mui/material";
-import "../components/style/Layout.css";
+//import "../components/style/Layout.css";
 
 type Props = {
   children: any;

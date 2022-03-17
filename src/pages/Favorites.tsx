@@ -251,7 +251,7 @@ const Favorites = (props: Props) => {
                               textOverflow: "ellipsis",
                               cursor: "pointer",
                             }}
-                            color="white"
+                            color="primary"
                             noWrap
                             gutterBottom
                             onClick={() => {

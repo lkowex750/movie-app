@@ -6,10 +6,14 @@ import reportWebVitals from './reportWebVitals';
 import "./i18n/index";
 import 'swiper/css';
 import "swiper/css/bundle"
+import ContextProvider from "./context/ContextProvider";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ContextProvider>
+      <App />
+    </ContextProvider>
+    
   </React.StrictMode>,
   document.getElementById('root')
 );

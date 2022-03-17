@@ -5,12 +5,13 @@ import { MovieProvider } from "./MovieSelectedContext";
 import { RegionProvider } from "./RegionContext";
 import { PageProvider } from "./PageContext";
 import {FavoiritesProvider} from "./FavoritesContext";
+import { ThemeModeProvider } from "./ThemeContext";
 const providers = [
   LanguageProvider,
   MovieProvider,
   RegionProvider,
   PageProvider,
-  FavoiritesProvider
+  FavoiritesProvider,ThemeModeProvider
 ];
 
 const ContextProvider = (...components: React.FC[]): React.FC =>

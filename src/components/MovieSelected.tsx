@@ -436,7 +436,7 @@ function MovieSelected(value: RootObject) {
             marginBottom={2}
             marginTop={1}
           >
-            Backdrops
+            {t("backdrops_title")}
           </Typography>
         ) : null}
 

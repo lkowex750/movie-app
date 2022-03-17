@@ -34,7 +34,10 @@ export const resources = {
       dialog_clear_content: "You want to clear favorites movie?.....",
       date_filters : "Date Filters",
       date_from : "from",
-      date_to : "to"
+      date_to : "to",
+      light_theme: "Light",
+      dark_theme: "Dark",
+      backdrops_title: "Backdrops"
     },
   },
   th: {
@@ -68,7 +71,10 @@ export const resources = {
       dialog_clear_content: "คุณต้องการเคลียร์รายการโปรดหรือไม่?.....",
       date_filters : "ตัวกรองวันที่",
       date_from : "จากวันที่",
-      date_to : "ถึงวันที่"
+      date_to : "ถึงวันที่",
+      light_theme: "สว่าง",
+      dark_theme: "ดาร์ก",
+      backdrops_title: "รวมภาพประกอบ"
     },
   },
 } as const;

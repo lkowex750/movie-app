@@ -22,7 +22,7 @@ const Movie_Style = makeStyles((theme: Theme) =>
       cursor: "pointer",
     },
     card_fav_bg: {
-      background: colors.blue_600,
+      background: "primary",
       borderRadius: 0,
       boxShadow: "none",
     },
