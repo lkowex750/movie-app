@@ -4,6 +4,8 @@ import './index.css';
 import App from './App/App';
 import reportWebVitals from './reportWebVitals';
 import "./i18n/index";
+import 'swiper/css';
+import "swiper/css/bundle"
 
 ReactDOM.render(
   <React.StrictMode>

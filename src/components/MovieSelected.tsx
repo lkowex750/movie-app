@@ -9,6 +9,8 @@ import {
   getMovieDetailTv,
   getCredits,
   getMovieReviews,
+  getImagesMovie,
+  getImagesTv,
 } from "../Api/api";
 import {
   LazyLoadComponent,
@@ -38,7 +40,12 @@ import { Credits } from "../interface/ResponseCastProps";
 import { Reviews } from "../interface/ResponseReviews";
 import { useTranslation } from "react-i18next";
 import Movie_Style from "./style/Movie_Style";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectFade, Navigation, Pagination, Lazy,Autoplay } from "swiper";
+import { MovieImages } from "../interface/ImagesMoviesInterfaces";
 
+import SwiperCore from "swiper";
+SwiperCore.use([Navigation, Pagination, Lazy,Autoplay]);
 function MovieSelected(value: RootObject) {
   const {
     id,
@@ -59,9 +66,13 @@ function MovieSelected(value: RootObject) {
   const [statusButton, setStatusButton] = useState<boolean>(false);
   const [cast, setCast] = useState<Credits["cast"]>([]);
   const [reviews, setReviews] = useState<Reviews["results"]>([]);
+  const slide = [];
+  const [movieImages, setMovieImages] = useState<MovieImages["backdrops"]>([]);
+
   const { t } = useTranslation();
   let path = "https://image.tmdb.org/t/p/original" + backdrop_path;
   let pathPost = "https://image.tmdb.org/t/p/original";
+  let backdropsPath = "https://image.tmdb.org/t/p/original";
   const classes = Movie_Style();
   let setRelease_date = "";
 
@@ -134,6 +145,23 @@ function MovieSelected(value: RootObject) {
       }
     });
   }, [statusButton]);
+
+  useEffect(() => {
+    async function fetchImagesMovie() {
+      const data = await getImagesMovie(id);
+      setMovieImages(data.backdrops);
+    }
+
+    async function fetchImagesTv() {
+      const data = await getImagesTv(id);
+      setMovieImages(data.backdrops);
+    }
+    if (params.type === "movie") {
+      fetchImagesMovie();
+    } else if (params.type === "tv") {
+      fetchImagesTv();
+    }
+  }, []);
 
   const handleSetFavoriteMovie = () => {
     //let pathPoster = "https://image.tmdb.org/t/p/original";
@@ -400,13 +428,43 @@ function MovieSelected(value: RootObject) {
             <Typography fontWeight={600}>{t("fullCast")}</Typography>
           </Link>
         </Grid>
-        <Grid container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="center">
-            <Typography fontWeight={600} variant="h4">Images</Typography>
+        
+        {movieImages.length > 0 ? (
+          <Typography
+            fontWeight={600}
+            variant="h4"
+            marginBottom={2}
+            marginTop={1}
+          >
+            Backdrops
+          </Typography>
+        ) : null}
 
-        </Grid>
+        <Swiper
+          id="main"
+          tag="section"
+          navigation
+          pagination
+          spaceBetween={0}
+          slidesPerView={1}
+          lazy
+          autoplay
+        >
+          {movieImages.map((movieImg, index) => {
+            //.slice(0, 6)
+            return (
+              <SwiperSlide key={index}>
+                <LazyLoadImage
+                  src={backdropsPath + movieImg.file_path}
+                  width={"100%"}
+                  height={"100%"}
+                  effect="blur"
+                />
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+
         {reviews.length > 0 ? (
           <Grid marginTop={3}>
             <Typography variant="h4" fontWeight={600}>

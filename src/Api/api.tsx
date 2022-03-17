@@ -57,7 +57,7 @@ export const getMoviesDiscover = async (
   with_genres: string,
   include_adult: boolean,
   dateFilter: Array<string>,
-  with_watch_providers : string
+  with_watch_providers: string
 ) => {
   if (sort_by === "") {
     sort_by = "popularity.desc";
@@ -76,7 +76,7 @@ export const getMoviesDiscover = async (
         "primary_release_date.gte": dateFilter[0],
         "primary_release_date.lte": dateFilter[1],
         with_watch_providers: with_watch_providers,
-        watch_region: "TH"
+        watch_region: "TH",
       },
     })
     .then((res) => res.data);
@@ -159,7 +159,7 @@ export const getTvDiscover = async (
   sort_by: string,
   with_genres: string,
   dateFilter: Array<string>,
-  with_watch_providers : string
+  with_watch_providers: string
 ) => {
   if (sort_by === "") {
     sort_by = "popularity.desc";
@@ -175,7 +175,7 @@ export const getTvDiscover = async (
         "first_air_date.gte": dateFilter[0],
         "first_air_date.lte": dateFilter[1],
         with_watch_providers: with_watch_providers,
-        watch_region : "TH"
+        watch_region: "TH",
       },
     })
     .then((res) => res.data);
@@ -255,17 +255,44 @@ export const getMovieReviews = async (
 };
 
 export const getMovieProviders = async (language: string) => {
-  const getData = await axios.get(api_path_movie_watchproviders, {
-    params: { api_key: api_key, language: language ,watch_region: "TH"},
-  }).then((res) => res.data);
+  const getData = await axios
+    .get(api_path_movie_watchproviders, {
+      params: { api_key: api_key, language: language, watch_region: "TH" },
+    })
+    .then((res) => res.data);
 
   return getData;
 };
 
-export const getTvProviders = async (language : string) => {
-  const getData = await axios.get(api_path_tv_watchproviders, {
-    params: { api_key: api_key, language: language ,watch_region: "TH"},
-  }).then((res) => res.data);
+export const getTvProviders = async (language: string) => {
+  const getData = await axios
+    .get(api_path_tv_watchproviders, {
+      params: { api_key: api_key, language: language, watch_region: "TH" },
+    })
+    .then((res) => res.data);
+
+  return getData;
+};
+
+export const getImagesMovie = async (id: number) => {
+  const getData = await axios
+    .get("https://api.themoviedb.org/3/movie/" + id + "/images", {
+      params: {
+        api_key: api_key,
+        language: "",
+      },
+    })
+    .then((res) => res.data);
+
+  return getData;
+};
+
+export const getImagesTv = async (id: number) => {
+  const getData = await axios
+    .get("https://api.themoviedb.org/3/tv/" + id + "/images", {
+      params: { api_key: api_key, language: "" },
+    })
+    .then((res) => res.data);
 
   return getData;
 };
