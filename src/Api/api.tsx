@@ -56,7 +56,8 @@ export const getMoviesDiscover = async (
   sort_by: string,
   with_genres: string,
   include_adult: boolean,
-  dateFilter: Array<string>
+  dateFilter: Array<string>,
+  with_watch_providers : string
 ) => {
   if (sort_by === "") {
     sort_by = "popularity.desc";
@@ -74,6 +75,8 @@ export const getMoviesDiscover = async (
         include_adult: include_adult,
         "primary_release_date.gte": dateFilter[0],
         "primary_release_date.lte": dateFilter[1],
+        with_watch_providers: with_watch_providers,
+        watch_region: "TH"
       },
     })
     .then((res) => res.data);
@@ -155,8 +158,12 @@ export const getTvDiscover = async (
   region: string,
   sort_by: string,
   with_genres: string,
-  dateFilter: Array<string>
+  dateFilter: Array<string>,
+  with_watch_providers : string
 ) => {
+  if (sort_by === "") {
+    sort_by = "popularity.desc";
+  }
   const getData = await axios
     .get(api_path_discover_tv, {
       params: {
@@ -167,6 +174,8 @@ export const getTvDiscover = async (
         with_genres: with_genres,
         "first_air_date.gte": dateFilter[0],
         "first_air_date.lte": dateFilter[1],
+        with_watch_providers: with_watch_providers,
+        watch_region : "TH"
       },
     })
     .then((res) => res.data);

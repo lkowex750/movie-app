@@ -15,7 +15,10 @@ import { Result } from "../interface/WatchProvidersInterface";
 
 interface Props {
   typeMovie: string;
+  setOnClicked: React.Dispatch<React.SetStateAction<boolean>>;
   watch_provider: Result;
+  watch_providersId : Result[];
+  setWatchProviders: React.Dispatch<React.SetStateAction<Result[]>>
 }
 
 const Watch_providers = (props: Props) => {
@@ -25,26 +28,23 @@ const Watch_providers = (props: Props) => {
   //   const [selected, setSelected] = useState<Array<boolean>>([false]);
   const [check, setCheck] = useState<boolean>(false);
   let path = "https://image.tmdb.org/t/p/original";
-  //   useEffect(() => {
-  //     async function fetchMovieProviders() {
-  //       const data = await getMovieProviders("en");
-  //       console.log(data.results);
-  //       setWatchProviders(data.results);
-  //     }
-  //     async function fetchTvProviders() {
-  //       const data = await getTvProviders("en");
-  //       setWatchProviders(data.results);
-  //     }
-
-  //     if (props.typeMovie === "movie") {
-  //       fetchMovieProviders();
-  //     } else {
-  //       fetchTvProviders();
-  //     }
-  //   }, []);
+  
 
   const handleOnClicked = () => {
     setCheck(!check);
+    props.setOnClicked(true);
+
+    if (!props.watch_providersId.includes(props.watch_provider) == false) {
+      
+      let val = new Set(props.watch_providersId);
+      val.delete(props.watch_provider);
+      props.setWatchProviders(Array.from(val));
+    } else {
+     
+      let val = new Set(props.watch_providersId);
+      val.add(props.watch_provider);
+      props.setWatchProviders(Array.from(val));
+    }
   };
   return (
     <Grid item margin={1} xs={3} md={2}>

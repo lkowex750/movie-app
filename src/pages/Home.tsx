@@ -85,7 +85,11 @@ const Home = () => {
   const [watchProviders, setWatchProviders] = useState<
     WatchProviders["results"]
   >([]);
+  const [watchProvidersId, setWatchProvidersId] = useState<
+    WatchProviders["results"]
+  >([]);
   var with_genres: string = "";
+  var with_watch_providers: string = "";
   //const valueRef = useRef<HTMLInputElement>(null);
 
   const { t } = useTranslation();
@@ -116,12 +120,14 @@ const Home = () => {
         sortAction,
         with_genres,
         isAdultsContents,
-        dateFilter
+        dateFilter,
+        with_watch_providers
       );
       setMovies(data.results);
       setPage(data.page);
       setLoading(true);
       with_genres = "";
+      with_watch_providers = "";
       if (data.total_pages >= 500) {
         setTotalPages(500);
       } else {
@@ -170,6 +176,15 @@ const Home = () => {
         with_genres = with_genres.slice(0, -1);
       }
 
+      if (watchProvidersId.length > 0) {
+        with_watch_providers = "";
+        watchProvidersId.forEach((e) => {
+          with_watch_providers += e.provider_id + ",";
+        });
+        with_watch_providers = with_watch_providers.slice(0, -1);
+        
+      }
+
       fetchGetDiscoverMovie();
     } else if (handleCallApi["search"]) {
       //console.log("Call Search Only");
@@ -216,7 +231,7 @@ const Home = () => {
   useEffect(() => {
     async function fetchMovieProviders() {
       const data = await getMovieProviders("en");
-      console.log(data.results);
+     
       setWatchProviders(data.results);
     }
     fetchMovieProviders();
@@ -233,7 +248,7 @@ const Home = () => {
 
         //console.log(dateValue[1]?.toISOString())
       }
-      console.log(dateFilter);
+      
       //console.log(dateValue[0]?.toISOString())
     }
   }, [dateValue]);
@@ -395,8 +410,17 @@ const Home = () => {
                 <Grid item>
                   <Typography marginBottom={2}>Where to Watch</Typography>
                   <Grid container direction="row">
-                    {watchProviders.map((wprovi,index) => {
-                      return (<Watch_providers typeMovie="movie" key={index} watch_provider={wprovi}></Watch_providers>);
+                    {watchProviders.map((wprovi, index) => {
+                      return (
+                        <Watch_providers
+                          typeMovie="movie"
+                          key={index}
+                          watch_provider={wprovi}
+                          setOnClicked={setIsFilterClicked}
+                          watch_providersId={watchProvidersId}
+                          setWatchProviders={setWatchProvidersId}
+                        ></Watch_providers>
+                      );
                     })}
                   </Grid>
 

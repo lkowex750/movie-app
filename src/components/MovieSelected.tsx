@@ -400,6 +400,13 @@ function MovieSelected(value: RootObject) {
             <Typography fontWeight={600}>{t("fullCast")}</Typography>
           </Link>
         </Grid>
+        <Grid container
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center">
+            <Typography fontWeight={600} variant="h4">Images</Typography>
+
+        </Grid>
         {reviews.length > 0 ? (
           <Grid marginTop={3}>
             <Typography variant="h4" fontWeight={600}>

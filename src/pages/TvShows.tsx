@@ -33,7 +33,7 @@ import {
   getListGenres,
   getMovieTvPop,
   getTvDiscover,
-  getSearchTvs,
+  getSearchTvs,getTvProviders
 } from "../Api/api";
 import LanguageContext from "../context/LanguageContext";
 import RegionContext from "../context/RegionContext";
@@ -47,6 +47,7 @@ import Home_Style from "../components/style/Home_Style";
 import DateRangePicker, { DateRange } from "@mui/lab/DateRangePicker";
 import DateFilters from "../components/DateFilters";
 import Watch_providers from "../components/Watch_providers";
+import { WatchProviders } from "../interface/WatchProvidersInterface";
 type Props = {};
 
 const TvShows = () => {
@@ -76,7 +77,14 @@ const TvShows = () => {
   });
   const [dateValue, setDateValue] = useState<DateRange<Date>>([null, null]);
   const [dateFilter, setDateFilter] = useState<Array<string>>([]);
+  const [watchProviders, setWatchProviders] = useState<
+    WatchProviders["results"]
+  >([]);
+  const [watchProvidersId, setWatchProvidersId] = useState<
+    WatchProviders["results"]
+  >([]);
   var with_genres: string = "";
+  var with_watch_providers: string = "";
   const { t } = useTranslation();
   const classes = Home_Style();
   useEffect(() => {
@@ -101,7 +109,8 @@ const TvShows = () => {
         isRegionIn,
         sortAction,
         with_genres,
-        dateFilter
+        dateFilter,
+        with_watch_providers
       );
       setTvSeries(data.results);
       setPage(data.page);
@@ -151,6 +160,14 @@ const TvShows = () => {
         //console.log("Adults : " + isAdultsContents);
         with_genres = with_genres.slice(0, -1);
       }
+      if (watchProvidersId.length > 0) {
+        with_watch_providers = "";
+        watchProvidersId.forEach((e) => {
+          with_watch_providers += e.provider_id + ",";
+        });
+        with_watch_providers = with_watch_providers.slice(0, -1);
+        
+      }
 
       fetchTvDiscover();
     } else if (handleCallApi["search"]) {
@@ -196,6 +213,15 @@ const TvShows = () => {
   }, [isLanguageIn]);
 
   useEffect(() => {
+    async function fetchMovieProviders() {
+      const data = await getTvProviders("en");
+      
+      setWatchProviders(data.results);
+    }
+    fetchMovieProviders();
+  }, []);
+
+  useEffect(() => {
     if (dateValue[0] !== null) {
       if (dateValue[1] !== null) {
         setDateFilter([
@@ -206,7 +232,7 @@ const TvShows = () => {
 
         //console.log(dateValue[1]?.toISOString())
       }
-      console.log(dateFilter);
+      
       //console.log(dateValue[0]?.toISOString())
     }
   }, [dateValue]);
@@ -366,6 +392,20 @@ const TvShows = () => {
               <Grid item>
                 <Typography marginBottom={2}>Where to Watch</Typography>
                     {/* <Watch_providers typeMovie="tv"></Watch_providers> */}
+                    <Grid container direction="row">
+                    {watchProviders.map((wprovi, index) => {
+                      return (
+                        <Watch_providers
+                          typeMovie="movie"
+                          key={index}
+                          watch_provider={wprovi}
+                          setOnClicked={setIsFilterClicked}
+                          watch_providersId={watchProvidersId}
+                          setWatchProviders={setWatchProvidersId}
+                        ></Watch_providers>
+                      );
+                    })}
+                  </Grid>
                 </Grid>
               </Grid>
             </AccordionDetails>
